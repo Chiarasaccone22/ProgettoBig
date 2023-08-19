@@ -1,0 +1,93 @@
+version: '3'
+
+networks:
+  progettofinale_bigdata:
+  
+services:
+
+  mongoDb:
+    image: mongo:latest
+    container_name: mongoDb
+#    ports:
+#      - 27017:27017
+    networks:
+      - progettofinale_bigdata
+  
+  dynamoDbGUI:
+    image: instructure/dynamo-local-admin:latest
+    container_name: dynamoDbGUI
+    ports:
+      - 8000:8000
+    networks:
+      - progettofinale_bigdata
+    volumes:
+      - ./docker/dynamodb:/home/dynamodblocal/data
+    working_dir: /home/dynamodblocal
+
+  cassandraGUI:
+    image: ipushc/cassandra-web
+    container_name: cassandraGUI
+    ports:
+      - 8083:8083
+    networks:
+      - progettofinale_bigdata
+    environment:
+      - CASSANDRA_HOST=cassandraDb
+      - CASSANDRA_PORT=9042
+
+  cassandraDb:
+    image: cassandra:latest
+    container_name: cassandraDb
+    networks:
+      - progettofinale_bigdata
+      
+  neo4jDbGUI:
+    image: neo4j
+    container_name: neo4jDbGUI
+    ports:
+      - 7474:7474
+#      - 7687:7687
+    volumes:
+      - $HOME/neo4j/data:/data
+    networks:
+      - progettofinale_bigdata
+
+  postgresDb:
+    image: postgres:latest
+    container_name: postgresDb
+    environment:
+      - POSTGRES_PASSWORD=password
+#    ports:
+#      - 5432:5432
+    networks:
+      - progettofinale_bigdata
+
+  pgAdminGUI:
+    image: dpage/pgadmin4
+    container_name: pgAdminGUI
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=password
+      - PGADMIN_DEFAULT_EMAIL=mat.foschi@stud.uniroma3.it
+    ports:
+      - 5050:80
+    networks:
+      - progettofinale_bigdata
+     
+  mongoGUI:
+    image: mongo-express:latest
+    container_name: mongoGUI
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongoDb
+    ports:
+      - 8081:8081
+    networks:
+      - progettofinale_bigdata
+
+  webappbd:
+    image: webappbd
+    container_name: webappbd
+    ports:
+      - 5555:5555
+    networks:
+      - progettofinale_bigdata
+
