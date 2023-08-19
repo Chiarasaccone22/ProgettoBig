@@ -83,11 +83,11 @@ services:
     networks:
       - progettofinale_bigdata
 
-#  webappbd:
-#    image: webappbd
-#    container_name: webappbd
-#    ports:
-#      - 5555:5555
-#    networks:
-#      - progettofinale_bigdata
+  webappdb:
+    image: webappdb
+    container_name: webappdb
+    ports:
+      - 8080:8080
+    networks:
+      - progettofinale_bigdata
 
