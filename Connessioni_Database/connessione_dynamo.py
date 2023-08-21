@@ -19,7 +19,7 @@ import boto3
 
 
 #dynamodb = boto3.resource('dynamodb', endpoint_url="http://localhost:8000")
-
+#funzione create_books_table che crea la tabella books che poi andiamo a richiamare nel main
 def create_books_table(dynamodb=None):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.create_table(
