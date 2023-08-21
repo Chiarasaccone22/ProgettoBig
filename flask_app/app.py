@@ -17,7 +17,7 @@ def index():
 def connPostgres():
 
     conn = psycopg2.connect(
-        host="172.22.0.6",
+        host="postgresDb",
         port="5432",
         user="postgres",
         password="password",
@@ -35,15 +35,13 @@ def connPostgres():
 @app.route('/connDynamo')
 #funzione che gestisce la home page
 def connDynamo():
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:8000',region_name='us-east-1')
     tables = list(dynamodb.tables.all())
-  
-
     return render_template('index.html', posts=tables)
 
 @app.route('/connMongo')
 def connMongo():
-    connessione = pymongo.MongoClient("mongodb://172.22.0.2:27017/")
+    connessione = pymongo.MongoClient("mongodb://mongoDb:27017/")
     l = connessione.list_database_names()
     return render_template('index.html',posts=l)
 
