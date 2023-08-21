@@ -18,3 +18,17 @@ password: password
 che se vedi sono le credenziali che mettiamo nella connessione sul app.py quando creiamo la connessione con il database
 
 ora che hai acceduto puoi creare a mano il database e vedi che sarà collegato con python
+
+ora vai su table>query tool> crei il dataset con i comandi CREATE ecc in SQL
+DROP TABLE IF EXISTS posts;
+CREATE TABLE posts (
+    titolo TEXT,
+    info TEXT
+);
+
+INSERT INTO posts(titolo, info) VALUES ('Lava il gatto', 'Lucidare accuratamente il pelo');
+INSERT INTO posts(titolo, info) VALUES ('mangia il cane', 'Lucidare accuratamente il peloooooooooooo');
+INSERT INTO posts(titolo, info) VALUES ('vulcano', 'scappa');
+INSERT INTO posts(titolo, info) VALUES ('mucca', 'dai da mangiare');
+
+SELECT * FROM posts;

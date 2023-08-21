@@ -17,7 +17,7 @@ def index():
     )
 
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM conti")
+    cursor.execute("SELECT * FROM posts")
     results = cursor.fetchall()
 
     cursor.close()
