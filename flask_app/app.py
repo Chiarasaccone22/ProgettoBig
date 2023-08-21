@@ -36,10 +36,8 @@ def connPostgres():
 @app.route('/connDynamo')
 #funzione che gestisce la home page
 def connDynamo():
-    dynamodb = boto3.resource('dynamodb', endpoint_url='http://dynamoDbGUI:8000', region_name='us-east-1')
+    dynamodb = boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:8000',region_name='us-east-1')
     tables = list(dynamodb.tables.all())
-  
-
     return render_template('index.html', posts=tables)
 
 @app.route('/connMongo')
