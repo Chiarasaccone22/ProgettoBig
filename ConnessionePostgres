@@ -1,0 +1,34 @@
+andare su docker e selezionare pgAdminGUI
+poi devi accedere a pgadmin con
+username: mat.foschi@stud.uniroma3.it
+pass: password
+
+poi alla pagina principale di pgAdmin devi fare Server>Register>Server
+e crei la connessione
+
+in general metti name: postgres
+poi vai sulla voce Connection e metti:
+
+Host name/address: 172.20.0.7 
+(perchè è l'indirizzo interno alla rete del container di postgres, e lo abbiamo visto andando sul terminale e facendo "docker container inspect postgresDb" e siamo andati a vedere la voce "IPAddress": "172.20.0.7")
+port: 5432 (è di default)
+Maintenance database: postgres
+username: postgres
+password: password
+che se vedi sono le credenziali che mettiamo nella connessione sul app.py quando creiamo la connessione con il database
+
+ora che hai acceduto puoi creare a mano il database e vedi che sarà collegato con python
+
+ora vai su table>query tool> crei il dataset con i comandi CREATE ecc in SQL
+DROP TABLE IF EXISTS posts;
+CREATE TABLE posts (
+    titolo TEXT,
+    info TEXT
+);
+
+INSERT INTO posts(titolo, info) VALUES ('Lava il gatto', 'Lucidare accuratamente il pelo');
+INSERT INTO posts(titolo, info) VALUES ('mangia il cane', 'Lucidare accuratamente il peloooooooooooo');
+INSERT INTO posts(titolo, info) VALUES ('vulcano', 'scappa');
+INSERT INTO posts(titolo, info) VALUES ('mucca', 'dai da mangiare');
+
+SELECT * FROM posts;
