@@ -57,8 +57,8 @@ services:
     container_name: postgresDb
     environment:
       - POSTGRES_PASSWORD=password
-#    ports:
-#      - 5432:5432
+    ports:
+      - 5432:5432
     networks:
       - progettofinale_bigdata
 
