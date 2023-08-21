@@ -8,19 +8,25 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
 
 @app.route('/')
 def index():
+    return render_template('index.html')
 
+@app.route('/connPostgres')
+def connPostgres():
+
+    print('connessione...')
     conn = psycopg2.connect(
-        host="localhost",
+        host="172.22.0.6",
         port="5432",
         user="postgres",
         password="password",
         database="postgres"
     )
-
+    print('connesso...')
     cursor = conn.cursor()
+    print('faccio query...')
     cursor.execute("SELECT * FROM posts")
     results = cursor.fetchall()
-
+    print('chiudo connessione...')
     cursor.close()
     conn.close()
 
@@ -67,5 +73,5 @@ def connDynamo():
     return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    #app.run(debug=True)
     serve(app, host="0.0.0.0", port=8080)
