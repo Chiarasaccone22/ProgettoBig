@@ -67,7 +67,7 @@ services:
     container_name: pgAdminGUI
     environment:
       - PGADMIN_DEFAULT_PASSWORD=password
-      - PGADMIN_DEFAULT_EMAIL=mat.foschi@stud.uniroma3.it
+      - PGADMIN_DEFAULT_EMAIL=prova@gmail.it
     ports:
       - 5050:80
     networks:
