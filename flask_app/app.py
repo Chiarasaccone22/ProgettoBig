@@ -2,6 +2,8 @@ from flask import Flask, render_template
 from waitress import serve
 import psycopg2
 import boto3
+import pymongo
+
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
@@ -71,6 +73,12 @@ def connDynamo():
     )
     print("Status:",dynamodb.tables.all())
     return render_template('index.html')
+
+@app.route('/connMongo')
+def connMongo():
+    connessione = pymongo.MongoClient("mongodb://172.22.0.2:27017/")
+    l = connessione.list_database_names()
+    return render_template('index.html',posts=l)
 
 if __name__ == "__main__":
     #app.run(debug=True)
