@@ -9,9 +9,6 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
 @app.route('/')
 #funzione che gestisce la home page
 def index():
-<<<<<<< Updated upstream
-    """ conn = psycopg2.connect(
-=======
 #connessione tra database e pagina web
     connection=sqlite3.connect('database.db')
     connection.row_factory= sqlite3.Row #ho messo .row perchè la connessione al database è organizzata in righe e infatti il nostro database è fatto dalle ennuple
@@ -30,33 +27,24 @@ def connection():
 
 
     conn = psycopg2.connect(
->>>>>>> Stashed changes
     host="localhost",
     port="5432",
     user="postgres",
     password="password",
     database="postgres"
-) """
+)
 
-    #cursor = conn.cursor()
-    """  cursor.execute("SELECT * FROM conti")
+    cursor = conn.cursor()
+    cursor.execute("CREATE TABLE posts ( titolo TEXT, info TEXT)")
     results = cursor.fetchall()
 
     for row in results:
         print(row)
-<<<<<<< Updated upstream
-    """
-    #cursor.close()
-    #conn.close()
-    return render_template('index.html')
-
-=======
 
     cursor.close()
     conn.close()
  """
->>>>>>> Stashed changes
 
 if __name__ == "__main__":
-    #app.run(debug=True)
+    app.run(debug=True)
     serve(app, host="0.0.0.0", port=8080)
