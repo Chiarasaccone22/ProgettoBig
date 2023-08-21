@@ -1,6 +1,6 @@
 andare su docker e selezionare pgAdminGUI
 poi devi accedere a pgadmin con
-username: mat.foschi@stud.uniroma3.it
+username: prova@gmail.it
 pass: password
 
 poi alla pagina principale di pgAdmin devi fare Server>Register>Server
