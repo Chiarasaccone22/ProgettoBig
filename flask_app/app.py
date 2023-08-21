@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from waitress import serve
+from py2neo import Graph
 import psycopg2
 import boto3
 import pymongo
@@ -17,7 +18,7 @@ def index():
 def connPostgres():
 
     conn = psycopg2.connect(
-        host="172.22.0.6",
+        host="postgresDb",
         port="5432",
         user="postgres",
         password="password",
@@ -35,7 +36,7 @@ def connPostgres():
 @app.route('/connDynamo')
 #funzione che gestisce la home page
 def connDynamo():
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb', endpoint_url='http://dynamoDbGUI:8000', region_name='us-east-1')
     tables = list(dynamodb.tables.all())
   
 
@@ -43,11 +44,20 @@ def connDynamo():
 
 @app.route('/connMongo')
 def connMongo():
-    connessione = pymongo.MongoClient("mongodb://172.22.0.2:27017/")
+    connessione = pymongo.MongoClient("mongodb://mongoDb:27017/") ##CAMBIARE OGNI VOLTA
     l = connessione.list_database_names()
     return render_template('index.html',posts=l)
 
+@app.route('/connNeo')
+#funzione che gestisce database Neo4j
+def connNeo():
+    graph = Graph("bolt://localhost:7687")
 
+    query = "MATCH (p:Person) RETURN p"
+    result = graph.run(query)
+    
+
+    return render_template('index.html', posts=result)
 
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ services:
     container_name: neo4jDbGUI
     ports:
       - 7474:7474
-#      - 7687:7687
+      - 7687:7687
     volumes:
       - $HOME/neo4j/data:/data
     networks:
