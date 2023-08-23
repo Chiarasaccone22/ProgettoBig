@@ -49,7 +49,7 @@ def connMongo():
 @app.route('/connNeo')
 #funzione che gestisce database Neo4j
 def connNeo():
-    graph = Graph("bolt://localhost:7687")
+    graph = Graph("bolt://neo4jDbGUI:7687")
 
     query = "MATCH (p:Person) RETURN p"
     result = graph.run(query)
