@@ -34,6 +34,38 @@ def connPostgres():
 
     return render_template('index.html', posts=results)
 
+@app.route('/caricamentoPostgres')
+def caricamentoPostgres():
+    conn = psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+
+    cur = conn.cursor()
+
+    # Esecuzione della query per creare la tabella
+    cur.execute('DROP TABLE IF EXISTS voli; CREATE TABLE voli ( colonna1 text,colonna2 text)')
+
+    # Caricamento dei dati dal file CSV nella tabella
+    with open('./airlines.csv', 'r') as f:
+        next(f)  # Salta la riga dell'intestazione
+        print('inserisco...')
+        cur.copy_from(f, 'voli', sep=',', null='')  # Copia i dati nel database
+
+    # Commit delle modifiche e chiusura della connessione
+    conn.commit()
+    cur.execute("SELECT * FROM voli")
+    results = cur.fetchall()
+    cur.close()
+    conn.close()
+
+
+    return render_template('index.html', posts=results)
+
+
 @app.route('/connDynamo')
 #funzione che gestisce la home page
 def connDynamo():
