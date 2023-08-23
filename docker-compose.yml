@@ -86,6 +86,10 @@ services:
   webappdb:
     image: webappdb
     container_name: webappdb
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=accessKey
+      - AWS_SECRET_ACCESS_KEY=secretKey
     ports:
       - 8080:8080
     networks:
