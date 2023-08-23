@@ -11,10 +11,10 @@ COPY ./flask_app/script /app/script
 # chiara dice che serve ma bhoooo
 ENV FLASK_APP=app
 ENV FLASK_ENV=development
-RUN aws configure set aws_access_key_id accessKey
-RUN aws configure set aws_secret_access_key secretKey
-RUN aws configure set default.region local
-RUN aws configure set default.output json
+#RUN aws configure set aws_access_key_id accessKey
+#RUN aws configure set aws_secret_access_key secretKey
+#RUN aws configure set default.region local
+#RUN aws configure set default.output json
 # espongo una porta su docker
 EXPOSE 8080
 # comandi all'avvio del container per lanciare la webapp
