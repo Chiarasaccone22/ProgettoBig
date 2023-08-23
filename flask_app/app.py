@@ -4,6 +4,7 @@ from py2neo import Graph
 import psycopg2
 import boto3
 import pymongo
+from cassandra.cluster import Cluster
 
 
 app = Flask(__name__)
@@ -54,8 +55,22 @@ def connNeo():
     query = "MATCH (p:Person) RETURN p"
     result = graph.run(query)
     
-
     return render_template('index.html', posts=result)
+
+@app.route('/connCassandra')
+def connCassandra():
+    cluster = Cluster(['cassandraDb'], port=9042)
+    session = cluster.connect()
+    session.execute("""
+    CREATE KEYSPACE IF NOT EXISTS cityinfo
+    WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}
+""")
+    session.execute('USE cityinfo')
+    session.execute('CREATE TABLE prova (id int,PRIMARY KEY(id))')
+    rows = session.execute('INSERT INTO prova (id) VALUES (0)')
+    rows = session.execute('SELECT * FROM prova')
+
+    return render_template('index.html', posts=rows)
 
 
 if __name__ == "__main__":
