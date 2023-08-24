@@ -8,6 +8,7 @@ RUN pip install flask==2.0.1 requests==2.25.1 psycopg2-binary waitress boto3 pym
 COPY ./flask_app/app.py /app
 COPY ./flask_app/templates /app/templates
 COPY ./flask_app/script /app/script
+COPY ./flask_app/caricamentiDB /app
 #inserimento dataset
 COPY ./flask_app/dataset /app
 # chiara dice che serve ma bhoooo
