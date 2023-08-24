@@ -22,9 +22,9 @@ connessionePostgres=psycopg2.connect(
     )
 connessioneMongo= pymongo.MongoClient("mongodb://mongoDb:27017/") 
 
-connessioneNeo=None
+connessioneNeo=Graph("bolt://neo4jDbGUI:7687")
 
-connessioneCassandra=None
+connessioneCassandra=Cluster(['cassandraDb'], port=9042).connect()
 
 connessioneDynamo= boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:8000',region_name='us-east-1')
 
@@ -152,7 +152,7 @@ def caricamentoMongo():
 @app.route('/connNeo')
 #funzione che gestisce database Neo4j
 def connNeo():
-    graph = Graph("bolt://neo4jDbGUI:7687")
+    graph = connessioneNeo
 
     query = "MATCH (p:Person) RETURN p"
     result = graph.run(query)
@@ -162,8 +162,8 @@ def connNeo():
 
 @app.route('/connCassandra')
 def connCassandra():
-    cluster = Cluster(['cassandraDb'], port=9042)
-    session = cluster.connect()
+   
+    session = connessioneCassandra
     #session.execute("""
     #CREATE KEYSPACE IF NOT EXISTS cityinfo
     #WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}""")
@@ -177,8 +177,8 @@ def connCassandra():
 @app.route('/caricamentoCassandra')
 def caricamentoCassandra():
     # connessione a cassandra
-    cluster = Cluster(['cassandraDb'], port=9042)
-    session = cluster.connect()
+    
+    session = connessioneCassandra
     
     # imposto ambiente di lavoro dove sono la table
     # Query per verificare l'esistenza di un keyspace
@@ -214,7 +214,7 @@ def caricamentoCassandra():
 
     # chiusura cluster e relativa sessione
     rows = session.execute('SELECT * FROM prova')
-    cluster.shutdown()
+    #cluster.shutdown()
     return render_template('index.html', posts=rows)
 
 if __name__ == "__main__":
