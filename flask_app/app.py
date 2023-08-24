@@ -6,6 +6,7 @@ import boto3
 import pymongo
 from cassandra.cluster import Cluster
 import pandas as pd
+import csv
 
 
 app = Flask(__name__)
@@ -76,6 +77,7 @@ def connDynamo():
     tables = list(dynamodb.tables.all())
     return render_template('index.html', posts=tables)
 
+
 @app.route('/connMongo')
 def connMongo():
     connessione = pymongo.MongoClient("mongodb://mongoDb:27017/") ##CAMBIARE OGNI VOLTA
@@ -128,6 +130,7 @@ def connNeo():
     
     return render_template('index.html', posts=result)
 
+
 @app.route('/connCassandra')
 def connCassandra():
     cluster = Cluster(['cassandraDb'], port=9042)
@@ -142,6 +145,32 @@ def connCassandra():
 
     return render_template('index.html', posts=rows)
 
+@app.route('/caricamentoCassandra')
+def caricamentoCassandra():
+    cluster = Cluster(['cassandraDb'], port=9042)
+    session = cluster.connect()
+    session.execute('USE cityinfo')
+    session.execute('CREATE TABLE IF NOT EXISTS prova (id text,campo text,PRIMARY KEY(id))')
+    #rows = session.execute('INSERT INTO prova (id) VALUES (0)')
+    
+    csv_file_path = './airlines.csv'
+
+    with open(csv_file_path, 'r') as f:
+        csv_reader = csv.reader(f)
+        next(csv_reader)  # Salta la riga dell'intestazione
+
+        for row in csv_reader:
+            colonna1 = row[0]
+            colonna2 = row[1]
+            # Estrai altre colonne...
+
+            query = f"INSERT INTO prova (id, campo) VALUES (%s, %s)"  # Sostituisci con il nome della tua tabella e le colonne corrispondenti
+            session.execute(query, (colonna1, colonna2))  # Sostituisci con i valori da inserire
+
+    # chiusura cluster e relativa sessione
+    rows = session.execute('SELECT * FROM prova')
+    cluster.shutdown()
+    return render_template('index.html', posts=rows)
 
 if __name__ == "__main__":
     #app.run(debug=True)
