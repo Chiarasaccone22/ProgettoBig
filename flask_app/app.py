@@ -177,7 +177,7 @@ def connCassandra():
     #WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}""")
     session.execute('USE cityinfo')
     session.execute('CREATE TABLE IF NOT EXISTS prova (id int,PRIMARY KEY(id))')
-    rows = session.execute('INSERT INTO prova (id) VALUES (0)')
+    # rows = session.execute('INSERT INTO prova (id) VALUES (0)')
     rows = session.execute('SELECT * FROM prova')
 
     return render_template('index.html', posts=rows)
@@ -195,7 +195,7 @@ def caricamentoCassandra():
     result = session.execute(query)
 
     if not(result.one()):
-        query = f"CREATE KEYSPACE {keyspace_name}"
+        query = f"CREATE KEYSPACE {keyspace_name} WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': 1}}"
         session.execute(query)
     query = f"USE {keyspace_name}"
     session.execute(query)
