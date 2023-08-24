@@ -21,9 +21,12 @@ connessionePostgres=psycopg2.connect(
         database="postgres"
     )
 connessioneMongo=None
+
 connessioneNeo=None
+
 connessioneCassandra=None
-connessioneDynamo=None
+
+connessioneDynamo= boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:8000',region_name='us-east-1')
 
 #apertura di default
 @app.route('/')
@@ -99,7 +102,7 @@ def caricamentoPostgres():
 @app.route('/connDynamo')
 #funzione che gestisce la home page
 def connDynamo():
-    dynamodb = boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:8000',region_name='us-east-1')
+    dynamodb = connessioneDynamo
     tables = list(dynamodb.tables.all())
     return render_template('index.html', posts=tables)
 
