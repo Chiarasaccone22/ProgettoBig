@@ -7,11 +7,17 @@ import pymongo
 from cassandra.cluster import Cluster
 import pandas as pd
 import csv
+<<<<<<< Updated upstream
 import caricamentoDy, caricamentoPos, caricamentoMongo, caricamentoCassandra
 
+=======
+import caricamentoDy
+import logging
+>>>>>>> Stashed changes
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
+logging.basicConfig(level=logging.INFO)
 
 #creiamo variabili globali di connessione inizializzandole 
 
@@ -34,6 +40,18 @@ connessioneDynamo= boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:80
 #apertura di default
 @app.route('/')
 def index():
+<<<<<<< Updated upstream
+=======
+    logging.debug('Apro le connessioni...')
+    """ #connesione Postgres
+        connessionePostgres = psycopg2.connect(
+            host="postgresDb",
+            port="5432",
+            user="postgres",
+            password="password",
+            database="postgres"
+        ) """
+>>>>>>> Stashed changes
 
     return render_template('index.html')
 
