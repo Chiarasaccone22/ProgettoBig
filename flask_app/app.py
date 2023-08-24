@@ -147,14 +147,18 @@ def connCassandra():
 
 @app.route('/caricamentoCassandra')
 def caricamentoCassandra():
+    # connessione a cassandra
     cluster = Cluster(['cassandraDb'], port=9042)
     session = cluster.connect()
+    # imposto ambiente di lavoro dove sono la table
     session.execute('USE cityinfo')
+
+    # se non c'è crea table altrimenti mantiene
     session.execute('CREATE TABLE IF NOT EXISTS prova (id text,campo text,PRIMARY KEY(id))')
-    #rows = session.execute('INSERT INTO prova (id) VALUES (0)')
-    
+    # legge file csv
     csv_file_path = './airlines.csv'
 
+    # scorre file csv
     with open(csv_file_path, 'r') as f:
         csv_reader = csv.reader(f)
         next(csv_reader)  # Salta la riga dell'intestazione
