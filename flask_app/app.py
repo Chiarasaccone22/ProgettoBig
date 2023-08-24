@@ -5,6 +5,7 @@ import psycopg2
 import boto3
 import pymongo
 from cassandra.cluster import Cluster
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -17,7 +18,6 @@ def index():
 
 @app.route('/connPostgres')
 def connPostgres():
-
     conn = psycopg2.connect(
         host="postgresDb",
         port="5432",
@@ -34,8 +34,11 @@ def connPostgres():
 
     return render_template('index.html', posts=results)
 
+
+# Caricamento dati da csv a postgres con csv nella webapp
 @app.route('/caricamentoPostgres')
 def caricamentoPostgres():
+    # Connessione a postgres
     conn = psycopg2.connect(
         host="postgresDb",
         port="5432",
@@ -43,7 +46,7 @@ def caricamentoPostgres():
         password="password",
         database="postgres"
     )
-
+    # cursore che si muove su mmmh
     cur = conn.cursor()
 
     # Esecuzione della query per creare la tabella
@@ -58,11 +61,11 @@ def caricamentoPostgres():
     # Commit delle modifiche e chiusura della connessione
     conn.commit()
     cur.execute("SELECT * FROM voli")
+    # mi da tutte le ennuple come righe
     results = cur.fetchall()
+    # chiudo connessione
     cur.close()
     conn.close()
-
-
     return render_template('index.html', posts=results)
 
 
@@ -78,6 +81,38 @@ def connMongo():
     connessione = pymongo.MongoClient("mongodb://mongoDb:27017/") ##CAMBIARE OGNI VOLTA
     l = connessione.list_database_names()
     return render_template('index.html',posts=l)
+
+
+# Inserisco dati da csv in Mongo con db e collezioni gia create e file csv nella webapp
+@app.route('/caricamentoMongo')
+def caricamentoMongo():
+    # connessione al db
+    connessione = pymongo.MongoClient("mongodb://mongoDb:27017/") ##CAMBIARE OGNI VOLTA
+    # database e collezione li ho creati mediante l'interfaccia mongoGUI
+    # prendo database
+    db = connessione.get_database('voli')
+    
+    collection_name = 'volo'
+    # verifico se c'è la collection
+    if collection_name in db.list_collection_names():
+        # c'è e la prendo
+        collection = db[collection_name]
+    else :
+        # non c'è la creo
+        collection = db.create_collection(collection_name)
+   
+    # leggo file csv da caricare
+    data = pd.read_csv('./airlines.csv')
+    # li metto da dataframe a json
+    data_json = data.to_dict(orient='records')
+    # inserisco i dati
+    collection.insert_many(data_json)
+
+    # chiudo connessione
+    connessione.close()
+    # visualizzo i dati caricati
+    return render_template('index.html',posts=data_json)
+
 
 @app.route('/connNeo')
 #funzione che gestisce database Neo4j
