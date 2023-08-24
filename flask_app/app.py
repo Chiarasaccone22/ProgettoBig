@@ -20,7 +20,7 @@ connessionePostgres=psycopg2.connect(
         password="password",
         database="postgres"
     )
-connessioneMongo=None
+connessioneMongo= pymongo.MongoClient("mongodb://mongoDb:27017/") 
 
 connessioneNeo=None
 
@@ -109,23 +109,23 @@ def connDynamo():
 
 @app.route('/connMongo')
 def connMongo():
-    connessione = pymongo.MongoClient("mongodb://mongoDb:27017/") ##CAMBIARE OGNI VOLTA
-    l = connessione.list_database_names()
-    return render_template('index.html',posts=l)
+    mongo = connessioneMongo
+    lista = mongo.list_database_names()
+    return render_template('index.html',posts=lista)
 
 
 # Inserisco dati da csv in Mongo (crea sia db che collezione se non esistono)
 @app.route('/caricamentoMongo')
 def caricamentoMongo():
     # connessione al db
-    connessione = pymongo.MongoClient("mongodb://mongoDb:27017/") ##CAMBIARE OGNI VOLTA
+    mongo = connessioneMongo
     # database e collezione li ho creati mediante l'interfaccia mongoGUI
     # prendo database
     db_name = 'voli'
-    if db_name in connessione.list_database_names():
-        db = connessione.get_database(db_name)
+    if db_name in mongo.list_database_names():
+        db = mongo.get_database(db_name)
     else:
-        db = connessione[db_name]
+        db = mongo[db_name]
     
     collection_name = 'volo'
     # verifico se c'è la collection
@@ -144,7 +144,7 @@ def caricamentoMongo():
     collection.insert_many(data_json)
 
     # chiudo connessione
-    connessione.close()
+    """  connessione.close() """
     # visualizzo i dati caricati
     return render_template('index.html',posts=data_json)
 
