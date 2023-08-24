@@ -7,7 +7,7 @@ import pymongo
 from cassandra.cluster import Cluster
 import pandas as pd
 import csv
-import caricamentoDy, caricamentoPos
+import caricamentoDy, caricamentoPos, caricamentoMongo, caricamentoCassandra
 
 
 app = Flask(__name__)
@@ -86,104 +86,42 @@ def connMongo():
 
 # Gestione del caricamento dei dataset nel database Mongo
 @app.route('/caricamentoMongo')
-def caricamentoMongo():
-    # connessione al db
+def caricamentoMongoDB():
+    # Carichiamo il database con i csv in caricamentoMongo e restituiamo tutti i nomi delle tabelle
+    mongo = caricamentoMongo.caricamentoMon(connessioneMongo)
     mongo = connessioneMongo
-    # database e collezione li ho creati mediante l'interfaccia mongoGUI
-    # prendo database
-    db_name = 'voli'
-    if db_name in mongo.list_database_names():
-        db = mongo.get_database(db_name)
-    else:
-        db = mongo[db_name]
-    
-    collection_name = 'volo'
-    # verifico se c'è la collection
-    if collection_name in db.list_collection_names():
-        # c'è e la prendo
-        collection = db[collection_name]
-    else :
-        # non c'è la creo
-        collection = db.create_collection(collection_name)
-   
-    # leggo file csv da caricare
-    data = pd.read_csv('./airlines.csv')
-    # li metto da dataframe a json
-    data_json = data.to_dict(orient='records')
-    # inserisco i dati
-    collection.insert_many(data_json)
-
-    # chiudo connessione
-    """  connessione.close() """
-    # visualizzo i dati caricati
-    return render_template('index.html',posts=data_json)
+    lista = mongo.list_database_names()
+    return render_template('index.html',posts=lista)
 
 
 # Gestione connessione Neo4j
 @app.route('/connNeo')
 def connNeo():
+    #connessione
     graph = connessioneNeo
-
+    #query
     query = "MATCH (p:Person) RETURN p"
     result = graph.run(query)
-    
     return render_template('index.html', posts=result)
 
 
 # Gestione connessione Cassandra
 @app.route('/connCassandra')
 def connCassandra():
-   
     session = connessioneCassandra
     session.execute('USE cityinfo')
-    session.execute('CREATE TABLE IF NOT EXISTS prova (id int,PRIMARY KEY(id))')
+    session.execute('CREATE TABLE IF NOT EXISTS prova (id text,campo text,PRIMARY KEY(id))')
     rows = session.execute('SELECT * FROM prova')
-
     return render_template('index.html', posts=rows)
 
 
 # Gestione del caricamento dei dataset nel database Cassandra
 @app.route('/caricamentoCassandra')
-def caricamentoCassandra():
-    # connessione a cassandra
-    
-    session = connessioneCassandra
-    
-    # imposto ambiente di lavoro dove sono la table
-    # Query per verificare l'esistenza di un keyspace
-    keyspace_name = "cityinfo"
-    query = f"SELECT keyspace_name FROM system_schema.keyspaces WHERE keyspace_name = '{keyspace_name}'"
-    result = session.execute(query)
-
-    if not(result.one()):
-        query = f"CREATE KEYSPACE {keyspace_name} WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': 1}}"
-        session.execute(query)
-    query = f"USE {keyspace_name}"
-    session.execute(query)
-
-    #session.execute('USE cityinfo')
-
-    # se non c'è crea table altrimenti mantiene
-    session.execute('CREATE TABLE IF NOT EXISTS prova (id text,campo text,PRIMARY KEY(id))')
-    # legge file csv
-    csv_file_path = './airlines.csv'
-
-    # scorre file csv
-    with open(csv_file_path, 'r') as f:
-        csv_reader = csv.reader(f)
-        next(csv_reader)  # Salta la riga dell'intestazione
-
-        for row in csv_reader:
-            colonna1 = row[0]
-            colonna2 = row[1]
-            # Estrai altre colonne...
-
-            query = f"INSERT INTO prova (id, campo) VALUES (%s, %s)"  # Sostituisci con il nome della tua tabella e le colonne corrispondenti
-            session.execute(query, (colonna1, colonna2))  # Sostituisci con i valori da inserire
-
-    # chiusura cluster e relativa sessione
-    rows = session.execute('SELECT * FROM prova')
-    #cluster.shutdown()
+def caricamentoCassandraDB():
+   # Carichiamo il database con i csv in caricamentoCassandra e restituiamo tutte le ennuple
+    cassandra = caricamentoCassandra.caricamentodb(connessioneCassandra)
+    cassandra.execute('USE cityinfo')
+    rows = cassandra.execute('SELECT * FROM prova')
     return render_template('index.html', posts=rows)
 
 
