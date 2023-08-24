@@ -69,7 +69,7 @@ def caricamentoDynamo(connessione):
     # Importa dati dal file CSV
 
     # Leggi il file CSV utilizzando pandas
-    csv_file = '/home/chiara/Documenti/GitHub/ProgettoBig/flask_app/dataset/airlines.csv'
+    csv_file = './airlines.csv'
     data = pd.read_csv(csv_file)
 
     # Itera attraverso le righe del DataFrame e inserisci i dati in DynamoDB
