@@ -109,7 +109,7 @@ def connDynamo():
 
 @app.route('/caricamentoDynamo')
 #funzione che gestisce la home page
-def connDynamo():
+def caricamentoDynamoDB():
     dynamodb=caricamentoDy.caricamentoDynamo(connessioneDynamo)
     tables = list(dynamodb.tables.all())
     return render_template('index.html', posts=tables)
