@@ -33,15 +33,6 @@ connessioneDynamo= boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:80
 @app.route('/')
 def index():
 
-    """ #connesione Postgres
-        connessionePostgres = psycopg2.connect(
-            host="postgresDb",
-            port="5432",
-            user="postgres",
-            password="password",
-            database="postgres"
-        ) """
-
     return render_template('index.html')
 
 @app.route('/connPostgres')
