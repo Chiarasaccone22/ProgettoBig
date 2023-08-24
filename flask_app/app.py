@@ -83,14 +83,18 @@ def connMongo():
     return render_template('index.html',posts=l)
 
 
-# Inserisco dati da csv in Mongo con db e collezioni gia create e file csv nella webapp
+# Inserisco dati da csv in Mongo (crea sia db che collezione se non esistono)
 @app.route('/caricamentoMongo')
 def caricamentoMongo():
     # connessione al db
     connessione = pymongo.MongoClient("mongodb://mongoDb:27017/") ##CAMBIARE OGNI VOLTA
     # database e collezione li ho creati mediante l'interfaccia mongoGUI
     # prendo database
-    db = connessione.get_database('voli')
+    db_name = 'voli'
+    if db_name in connessione.list_database_names():
+        db = connessione.get_database(db_name)
+    else:
+        db = connessione[db_name]
     
     collection_name = 'volo'
     # verifico se c'è la collection
