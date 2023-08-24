@@ -150,8 +150,20 @@ def caricamentoCassandra():
     # connessione a cassandra
     cluster = Cluster(['cassandraDb'], port=9042)
     session = cluster.connect()
+    
     # imposto ambiente di lavoro dove sono la table
-    session.execute('USE cityinfo')
+    # Query per verificare l'esistenza di un keyspace
+    keyspace_name = "cityinfo"
+    query = f"SELECT keyspace_name FROM system_schema.keyspaces WHERE keyspace_name = '{keyspace_name}'"
+    result = session.execute(query)
+
+    if not(result.one()):
+        query = f"CREATE KEYSPACE {keyspace_name}"
+        session.execute(query)
+    query = f"USE {keyspace_name}"
+    session.execute(query)
+
+    #session.execute('USE cityinfo')
 
     # se non c'è crea table altrimenti mantiene
     session.execute('CREATE TABLE IF NOT EXISTS prova (id text,campo text,PRIMARY KEY(id))')
