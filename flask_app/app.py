@@ -50,7 +50,7 @@ def caricamentoPostgres():
     cur.execute('DROP TABLE IF EXISTS voli; CREATE TABLE voli ( colonna1 text,colonna2 text)')
 
     # Caricamento dei dati dal file CSV nella tabella
-    with open('./airlines.csv', 'r') as f:
+    with open('./dataset/airlines.csv', 'r') as f:
         next(f)  # Salta la riga dell'intestazione
         print('inserisco...')
         cur.copy_from(f, 'voli', sep=',', null='')  # Copia i dati nel database
