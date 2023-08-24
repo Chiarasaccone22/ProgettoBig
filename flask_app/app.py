@@ -7,13 +7,14 @@ import pymongo
 from cassandra.cluster import Cluster
 import pandas as pd
 import csv
-import caricamentoDy
+import caricamentoDy, caricamentoPos
 
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
 
-#creiamo variabili globali di connessione inizializzandole a None
+#creiamo variabili globali di connessione inizializzandole 
+
 connessionePostgres=psycopg2.connect(
         host="postgresDb",
         port="5432",
@@ -29,83 +30,53 @@ connessioneCassandra=Cluster(['cassandraDb'], port=9042).connect()
 
 connessioneDynamo= boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:8000',region_name='us-east-1')
 
+
 #apertura di default
 @app.route('/')
 def index():
 
     return render_template('index.html')
 
+
+#Gestione connessione Postgres
 @app.route('/connPostgres')
 def connPostgres():
-    """ conn = psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    ) """
 
     cursor = connessionePostgres.cursor()
     cursor.execute("SELECT * FROM posts")
     results = cursor.fetchall()
-    """   cursor.close()
-        connessionePostgres.close() """
 
     return render_template('index.html', posts=results)
 
 
-# Caricamento dati da csv a postgres con csv nella webapp
+# Gestione del caricamento dei dataset nel database Postgres
 @app.route('/caricamentoPostgres')
-def caricamentoPostgres():
-    """     # Connessione a postgres
-        conn = psycopg2.connect(
-            host="postgresDb",
-            port="5432",
-            user="postgres",
-            password="password",
-            database="postgres"
-        ) """
-    
-    
-    cursor = connessionePostgres.cursor()
-
-    # Esecuzione della query per creare la tabella
-    cursor.execute('DROP TABLE IF EXISTS voli; CREATE TABLE voli ( colonna1 text,colonna2 text)')
-
-    # Caricamento dei dati dal file CSV nella tabella
-    with open('./airlines.csv', 'r') as f:
-        next(f)  # Salta la riga dell'intestazione
-        print('inserisco...')
-        cursor.copy_from(f, 'voli', sep=',', null='')  # Copia i dati nel database
-
-    # Commit delle modifiche e chiusura della connessione
-    connessionePostgres.commit()
-    cursor.execute("SELECT * FROM voli")
-    # mi da tutte le ennuple come righe
+def caricamentoPostgresDB():
+    #carichiamo il database con i csv in caricamentoPos e facciamo una query select
+    postgres=caricamentoPos.caricamentoPostgres(connessionePostgres)
+    cursor = postgres.cursor()
+    cursor.execute("SELECT * FROM posts")
     results = cursor.fetchall()
-   
-    """ # chiudo connessione
-    cursor.close()
-    conn.close() """
-
     return render_template('index.html', posts=results)
 
 
+# Gestione connessione Dynamo
 @app.route('/connDynamo')
-#funzione che gestisce la home page
 def connDynamo():
+    #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
     dynamodb = connessioneDynamo
     tables = list(dynamodb.tables.all())
     return render_template('index.html', posts=tables)
 
+
+# Gestione del caricamento dei dataset nel database Dynamo Db
 @app.route('/caricamentoDynamo')
-#funzione che gestisce la home page
 def caricamentoDynamoDB():
     dynamodb=caricamentoDy.caricamentoDynamo(connessioneDynamo)
     tables = list(dynamodb.tables.all())
     return render_template('index.html', posts=tables)
 
-
+# Gestione connessione Mongo
 @app.route('/connMongo')
 def connMongo():
     mongo = connessioneMongo
@@ -113,7 +84,7 @@ def connMongo():
     return render_template('index.html',posts=lista)
 
 
-# Inserisco dati da csv in Mongo (crea sia db che collezione se non esistono)
+# Gestione del caricamento dei dataset nel database Mongo
 @app.route('/caricamentoMongo')
 def caricamentoMongo():
     # connessione al db
@@ -148,8 +119,8 @@ def caricamentoMongo():
     return render_template('index.html',posts=data_json)
 
 
+# Gestione connessione Neo4j
 @app.route('/connNeo')
-#funzione che gestisce database Neo4j
 def connNeo():
     graph = connessioneNeo
 
@@ -159,20 +130,19 @@ def connNeo():
     return render_template('index.html', posts=result)
 
 
+# Gestione connessione Cassandra
 @app.route('/connCassandra')
 def connCassandra():
    
     session = connessioneCassandra
-    #session.execute("""
-    #CREATE KEYSPACE IF NOT EXISTS cityinfo
-    #WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}""")
     session.execute('USE cityinfo')
     session.execute('CREATE TABLE IF NOT EXISTS prova (id int,PRIMARY KEY(id))')
-    # rows = session.execute('INSERT INTO prova (id) VALUES (0)')
     rows = session.execute('SELECT * FROM prova')
 
     return render_template('index.html', posts=rows)
 
+
+# Gestione del caricamento dei dataset nel database Cassandra
 @app.route('/caricamentoCassandra')
 def caricamentoCassandra():
     # connessione a cassandra
@@ -215,6 +185,12 @@ def caricamentoCassandra():
     rows = session.execute('SELECT * FROM prova')
     #cluster.shutdown()
     return render_template('index.html', posts=rows)
+
+
+
+
+
+
 
 if __name__ == "__main__":
     #app.run(debug=True)
