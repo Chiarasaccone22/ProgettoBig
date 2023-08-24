@@ -7,6 +7,7 @@ import pymongo
 from cassandra.cluster import Cluster
 import pandas as pd
 import csv
+import caricamentoDy
 
 
 app = Flask(__name__)
@@ -103,6 +104,13 @@ def caricamentoPostgres():
 #funzione che gestisce la home page
 def connDynamo():
     dynamodb = connessioneDynamo
+    tables = list(dynamodb.tables.all())
+    return render_template('index.html', posts=tables)
+
+@app.route('/caricamentoDynamo')
+#funzione che gestisce la home page
+def connDynamo():
+    dynamodb=caricamentoDy.caricamentoDynamo(connessioneDynamo)
     tables = list(dynamodb.tables.all())
     return render_template('index.html', posts=tables)
 
