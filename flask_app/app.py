@@ -13,7 +13,13 @@ app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
 
 #creiamo variabili globali di connessione inizializzandole a None
-connessionePostgres=None
+connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
 connessioneMongo=None
 connessioneNeo=None
 connessioneCassandra=None
@@ -23,15 +29,14 @@ connessioneDynamo=None
 @app.route('/')
 def index():
 
-#connesione Postgres
-
-    connessionePostgres = psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
+    """ #connesione Postgres
+        connessionePostgres = psycopg2.connect(
+            host="postgresDb",
+            port="5432",
+            user="postgres",
+            password="password",
+            database="postgres"
+        ) """
 
     return render_template('index.html')
 
