@@ -12,14 +12,20 @@ import csv
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
 
+#creiamo variabili globali di connessione inizializzandole a None
+connessionePostgres=None
+connessioneMongo=None
+connessioneNeo=None
+connessioneCassandra=None
+connessioneDynamo=None
+
 #apertura di default
 @app.route('/')
 def index():
-    return render_template('index.html')
 
-@app.route('/connPostgres')
-def connPostgres():
-    conn = psycopg2.connect(
+#connesione Postgres
+
+    connessionePostgres = psycopg2.connect(
         host="postgresDb",
         port="5432",
         user="postgres",
@@ -27,11 +33,23 @@ def connPostgres():
         database="postgres"
     )
 
-    cursor = conn.cursor()
+    return render_template('index.html')
+
+@app.route('/connPostgres')
+def connPostgres():
+    """ conn = psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    ) """
+
+    cursor = connessionePostgres.cursor()
     cursor.execute("SELECT * FROM posts")
     results = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    """   cursor.close()
+        connessionePostgres.close() """
 
     return render_template('index.html', posts=results)
 
@@ -39,34 +57,37 @@ def connPostgres():
 # Caricamento dati da csv a postgres con csv nella webapp
 @app.route('/caricamentoPostgres')
 def caricamentoPostgres():
-    # Connessione a postgres
-    conn = psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
-    # cursore che si muove su mmmh
-    cur = conn.cursor()
+    """     # Connessione a postgres
+        conn = psycopg2.connect(
+            host="postgresDb",
+            port="5432",
+            user="postgres",
+            password="password",
+            database="postgres"
+        ) """
+    
+    
+    cursor = connessionePostgres.cursor()
 
     # Esecuzione della query per creare la tabella
-    cur.execute('DROP TABLE IF EXISTS voli; CREATE TABLE voli ( colonna1 text,colonna2 text)')
+    cursor.execute('DROP TABLE IF EXISTS voli; CREATE TABLE voli ( colonna1 text,colonna2 text)')
 
     # Caricamento dei dati dal file CSV nella tabella
     with open('./airlines.csv', 'r') as f:
         next(f)  # Salta la riga dell'intestazione
         print('inserisco...')
-        cur.copy_from(f, 'voli', sep=',', null='')  # Copia i dati nel database
+        cursor.copy_from(f, 'voli', sep=',', null='')  # Copia i dati nel database
 
     # Commit delle modifiche e chiusura della connessione
-    conn.commit()
-    cur.execute("SELECT * FROM voli")
+    connessionePostgres.commit()
+    cursor.execute("SELECT * FROM voli")
     # mi da tutte le ennuple come righe
-    results = cur.fetchall()
-    # chiudo connessione
-    cur.close()
-    conn.close()
+    results = cursor.fetchall()
+   
+    """ # chiudo connessione
+    cursor.close()
+    conn.close() """
+
     return render_template('index.html', posts=results)
 
 
