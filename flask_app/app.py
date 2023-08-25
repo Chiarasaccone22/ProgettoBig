@@ -1,4 +1,4 @@
-from flask import Flask, render_template,jsonify
+from flask import Flask, render_template,jsonify,Response
 from waitress import serve
 from py2neo import Graph
 import psycopg2
@@ -90,7 +90,16 @@ def caricamentoDynamoDB():
 def connMongo():
     mongo = connessioneMongo
     lista = mongo.list_database_names()
-    return jsonify(lista)
+    #if "voli" in lista:
+    dbVoli = mongo["voli"]
+    collezioneVolo = dbVoli["volo"]
+    voli = list(collezioneVolo.find())
+    voli_lista = []
+    for documento in voli:
+        documento['_id'] = str(documento['_id'])
+        voli_lista.append(documento)
+    return jsonify(voli_lista)
+
     #return render_template('index.html',posts=lista)
 
 
