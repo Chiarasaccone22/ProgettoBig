@@ -20,11 +20,11 @@ function prova(){
     })  
 
     // carico menu a tendina 2
-    /*const outputElement = document.getElementById('menu2');
-    const response = fetch(`http://localhost:8080/connMongo`, { method: 'GET',
+    const outputElement2 = document.getElementById('menu2');
+    const response2 = fetch(`http://localhost:8080/connMongo`, { method: 'GET',
                                                                     headers: { 'Accept': 'application/json',},
-    }).then(response => {response.json()}).then(dataArray => {
-        console.log(response)
+    }).then(response2 => {response2.json()}).then(dataArray => {
+        console.log(response2)
     /* for (i in dataArray){
         console.log('ciao')
         console.log(dataArray[i])
@@ -34,7 +34,7 @@ function prova(){
         //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
     } 
     })*/
-    //});
+    });
 }
 
 window.onload = prova;

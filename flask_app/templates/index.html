@@ -25,20 +25,13 @@
       </select>
     </fieldset>
 
-    <!-- <script>
-      const outputElement = document.getElementById('menu1');
-      const response = fetch(`http://localhost:8080/connPostgres`, { method: 'GET',
-                                                                      headers: { 'Accept': 'application/json',},
-      }).then(response => response.json()).then(dataArray => { 
-       for (i in dataArray){
-          console.log(dataArray[i])
-          var paragraph = document.createElement("option");
-          paragraph.textContent= dataArray[i]
-          outputElement.appendChild(paragraph)
-          //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
-      }
-    })  
-    </script> -->
+    <fieldset>
+      <legend>Siti per webmaster</legend>
+      <select name="siti" id="menu2">
+        <option value="http://www.html.it" selected="selected">www.html.it </option>
+      </select>
+    </fieldset>
+
     <script src="../script/script.js"></script>
   </body>
 </html>
