@@ -7,13 +7,13 @@ def caricamentoMon(connessione):
     mongo = connessione
     
     # database e collezione li ho creati mediante l'interfaccia mongoGUI
-    db_name = 'voli'
+    db_name = 'aereoporti'
     if db_name in mongo.list_database_names():
         db = mongo.get_database(db_name)
     else:
         db = mongo[db_name]
     
-    collection_name = 'volo'
+    collection_name = 'aereoporto'
     # verifico se c'è la collection
     if collection_name in db.list_collection_names():
         # c'è e la prendo
@@ -23,7 +23,7 @@ def caricamentoMon(connessione):
         collection = db.create_collection(collection_name)
    
     # leggo file csv da caricare
-    data = pd.read_csv('./airlines.csv')
+    data = pd.read_csv('./airports.csv')
     # li metto da dataframe a json
     data_json = data.to_dict(orient='records')
     # inserisco i dati
