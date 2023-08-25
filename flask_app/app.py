@@ -96,7 +96,7 @@ def connMongo():
     #if "voli" in lista:
     dbVoli = mongo["voli"]
     collezioneVolo = dbVoli["volo"]
-    voli = list(collezioneVolo.find())
+    voli = {collezioneVolo.find()}
     """ voli_lista = []
     for documento in voli:
         documento['_id'] = str(documento['_id'])
