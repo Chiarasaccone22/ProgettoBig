@@ -7,27 +7,6 @@
     <!--Titolo pagina-->
     <title>Database WebApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    
-    <style>
-      /* Stile per il menu a tendina */
-      .dropdown {
-          position: relative;
-          display: inline-block;
-      }
-      
-      .dropdown-content {
-          display: none;
-          position: absolute;
-          background-color: #f9f9f9;
-          min-width: 160px;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-          z-index: 1;
-      }
-      
-      .dropdown:hover .dropdown-content {
-          display: block;
-      }
-  </style>
 
 
   </head>
@@ -36,8 +15,8 @@
 
     <button id="myButton">Clicca per Eseguire lo Script</button>
 
-    <div id="output" prova></p>
-    <script src="../script/script.js"></script>
+    <div id="output"></p>
+    
 
     <fieldset>
       <legend>Siti per webmaster</legend>
@@ -46,12 +25,20 @@
       </select>
     </fieldset>
 
-    <fieldset>
-      <legend>Siti per webmaster</legend>
-      <select name="siti" id="menu2">
-        <option value="http://www.html.it" selected="selected">www.html.it </option>
-      </select>
-    </fieldset>
-
+    <!-- <script>
+      const outputElement = document.getElementById('menu1');
+      const response = fetch(`http://localhost:8080/connPostgres`, { method: 'GET',
+                                                                      headers: { 'Accept': 'application/json',},
+      }).then(response => response.json()).then(dataArray => { 
+       for (i in dataArray){
+          console.log(dataArray[i])
+          var paragraph = document.createElement("option");
+          paragraph.textContent= dataArray[i]
+          outputElement.appendChild(paragraph)
+          //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
+      }
+    })  
+    </script> -->
+    <script src="../script/script.js"></script>
   </body>
 </html>
