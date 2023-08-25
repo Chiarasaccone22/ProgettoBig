@@ -94,8 +94,8 @@ def connMongo():
     mongo = connessioneMongo
     lista = mongo.list_database_names()
     #if "voli" in lista:
-    dbVoli = mongo["voli"]
-    collezioneVolo = dbVoli["volo"]
+    dbVoli = mongo["aereoporti"]
+    collezioneVolo = dbVoli["aereoporto"]
     voli = {collezioneVolo.find()}
     """ voli_lista = []
     for documento in voli:
