@@ -130,9 +130,8 @@ def connNeo():
 @app.route('/connCassandra',methods=['GET'])
 def connCassandra():
     session = connessioneCassandra
-    session.execute('USE cityinfo')
-    session.execute('CREATE TABLE IF NOT EXISTS prova (id text,campo text,PRIMARY KEY(id))')
-    rows = session.execute('SELECT * FROM prova')
+    session.execute('USE ProgettoBig')
+    rows = session.execute('SELECT * FROM volint')
     return jsonify(rows)
     #return render_template('index.html', posts=rows)
 
@@ -142,8 +141,8 @@ def connCassandra():
 def caricamentoCassandraDB():
    # Carichiamo il database con i csv in caricamentoCassandra e restituiamo tutte le ennuple
     cassandra = caricamentoCassandra.caricamentodb(connessioneCassandra)
-    cassandra.execute('USE cityinfo')
-    rows = cassandra.execute('SELECT * FROM prova')
+    cassandra.execute('USE ProgettoBig')
+    rows = cassandra.execute('SELECT * FROM volint')
     return jsonify(rows)
     #return render_template('index.html', posts=rows)
 
