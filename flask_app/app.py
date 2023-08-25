@@ -9,6 +9,7 @@ import pandas as pd
 import csv
 import caricamentoDy, caricamentoPos, caricamentoMongo, caricamentoCassandra
 import logging
+from bson import json_util
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
@@ -72,8 +73,10 @@ def caricamentoPostgresDB():
 def connDynamo():
     #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
     dynamodb = connessioneDynamo
-    tables = list(dynamodb.tables.all())
-    return jsonify(tables)
+    #tables = list(dynamodb.tables.all())
+    tabella = dynamodb.Table("CompagnieAeree")
+    response = tabella.scan()
+    return jsonify(response)
     #return render_template('index.html', posts=tables)
 
 
@@ -94,12 +97,13 @@ def connMongo():
     dbVoli = mongo["voli"]
     collezioneVolo = dbVoli["volo"]
     voli = list(collezioneVolo.find())
-    voli_lista = []
+    """ voli_lista = []
     for documento in voli:
         documento['_id'] = str(documento['_id'])
         voli_lista.append(documento)
-    return jsonify(voli_lista)
-
+    return jsonify(voli_lista) """
+    
+    return Response( json_util.dumps(voli), mimetype='application/json')
     #return render_template('index.html',posts=lista)
 
 
