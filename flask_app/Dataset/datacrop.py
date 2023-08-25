@@ -8,7 +8,7 @@ with open('/home/chiara/archive/flights.csv', 'r') as csvfile:
     # Inizializza un contatore per tenere traccia delle righe lette
     count = 0
 
-    """     # Crea un nuovo file CSV in modalità di scrittura
+     # Crea un nuovo file CSV in modalità di scrittura
     with open('/home/chiara/Documenti/GitHub/ProgettoBig/flask_app/Dataset/timestamp_1000.csv', 'w', newline='') as output_csvfile:
         # Crea un oggetto scrittore CSV
         csvwriter = csv.writer(output_csvfile)
@@ -16,14 +16,14 @@ with open('/home/chiara/archive/flights.csv', 'r') as csvfile:
         # Scrivi le prime 10 colonne delle righe nel nuovo file
         for row in csvreader:
             if count < 1000:
-                selected_columns = row[:11] + [row[14]]+ row[18:19] + row[21: 22] + row[24:26]# Seleziona le colonne desiderate
+                selected_columns = row[:11] + [row[13]]+ row[17:19] + row[20: 22] + row[23:31] # Seleziona le colonne desiderate
                 csvwriter.writerow(selected_columns)
                 count += 1
             else:
-                break  """
+                break  
 
     
-     # Crea un nuovo file CSV in modalità di scrittura
+    """ # Crea un nuovo file CSV in modalità di scrittura
     with open('/home/chiara/Documenti/GitHub/ProgettoBig/flask_app/Dataset/intervalli_1000.csv', 'w', newline='') as output_csvfile:
         # Crea un oggetto scrittore CSV
         csvwriter = csv.writer(output_csvfile)
@@ -31,11 +31,11 @@ with open('/home/chiara/archive/flights.csv', 'r') as csvfile:
         # Scrivi le prime 10 colonne delle righe nel nuovo file
         for row in csvreader:
             if count < 1000:
-                selected_columns = row[:11] +  row[12:13] + row[15: 17] + [row[18]] + [row[20]]+ row[23:31]# Seleziona le colonne desiderate
+                selected_columns = row[:9] +  row[11:13] + row[14: 18] + [row[19]]+ row[22:31]# Seleziona le colonne desiderate
                 csvwriter.writerow(selected_columns)
                 count += 1
             else:
-                break 
+                break  """
     
 """ 
 Leggenda di cosa va preso e cosa no:

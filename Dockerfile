@@ -10,7 +10,7 @@ COPY ./flask_app/templates /app/templates
 COPY ./flask_app/script /app/script
 COPY ./flask_app/caricamentiDB /app
 #inserimento dataset
-COPY ./flask_app/dataset /app
+COPY ./flask_app/Dataset /app
 # chiara dice che serve ma bhoooo
 ENV FLASK_APP=app
 ENV FLASK_ENV=development

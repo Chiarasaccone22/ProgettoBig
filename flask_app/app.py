@@ -44,7 +44,7 @@ def index():
 def connPostgres():
 
     cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT * FROM posts")
+    cursor.execute("SELECT * FROM voli")
     results = cursor.fetchall()
 
     return render_template('index.html', posts=results)
@@ -56,7 +56,7 @@ def caricamentoPostgresDB():
     #carichiamo il database con i csv in caricamentoPos e facciamo una query select
     postgres=caricamentoPos.caricamentoPostgres(connessionePostgres)
     cursor = postgres.cursor()
-    cursor.execute("SELECT * FROM posts")
+    cursor.execute("SELECT * FROM voli")
     results = cursor.fetchall()
     return render_template('index.html', posts=results)
 
