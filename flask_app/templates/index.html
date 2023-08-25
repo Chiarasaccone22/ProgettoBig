@@ -45,5 +45,33 @@
             {% endfor %}
           </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    
+
+    <button id="myButton">Clicca per Eseguire lo Script</button>
+
+    <div id="output"></p>
+
+
+    <script>
+        //const button = document.getElementById('myButton');
+        const outputElement = document.getElementById('output');
+
+        //button.addEventListener('click', () => {
+          document.addEventListener('DOMContentLoaded',function(){
+            // Esegui lo script al click del bottone
+            const response = fetch(`http://localhost:8080/connPostgres`, { method: 'GET', headers: { 'Accept': 'application/json',},
+            }).then(response => response.json()).then(dataArray => { 
+              for (i in dataArray){
+                console.log(dataArray[i])
+                var paragraph = document.createElement("p");
+                paragraph.textContent= dataArray[i]
+                outputElement.appendChild(paragraph)
+                //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
+              }
+            })
+        });
+    </script>
+
+
   </body>
 </html>
