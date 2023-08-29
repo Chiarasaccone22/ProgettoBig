@@ -17,7 +17,7 @@ async function caricamentoDynamo(){
         console.log(risultato['Items'])
         risultato = risultato['Items']
         // carico menu
-        for (i in risultato){
+        for (const i in risultato){
           //console.log(risultato[i])
           var paragraph = document.createElement("option");
           paragraph.textContent= risultato[i]['name']

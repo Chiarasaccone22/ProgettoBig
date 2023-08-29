@@ -17,7 +17,7 @@ async function caricamentoMongo(){
         console.log(risultato[0])
         risultato = risultato[0]
         // carico menu
-        for (i in risultato){
+        for (const i in risultato){
           //console.log(risultato[i])
           var paragraph = document.createElement("option");
           paragraph.textContent= risultato[i]['AIRPORT']

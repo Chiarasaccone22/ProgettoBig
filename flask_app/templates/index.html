@@ -42,8 +42,14 @@
      </select>
     </fieldset>
 
-    <script src="../script/scriptPostgres.js"></script>
-    <script src="../script/scriptMongo.js"></script>
-    <script src="../script/scriptDynamo.js"></script>
+    <script         src="{{ url_for('static', filename='scriptPostgres.js') }}"
+        type="module"
+    ></script>
+    <script         src="{{ url_for('static', filename='scriptMongo.js') }}"
+        type="module"
+    ></script>
+    <script         src="{{ url_for('static', filename='scriptDynamo.js') }}"
+        type="module"
+    ></script>
   </body>
 </html>

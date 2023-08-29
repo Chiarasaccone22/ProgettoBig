@@ -23,7 +23,7 @@ async function caricamentoPostgres(){
         postgresJson.then(risultato => {
           console.log(risultato)
           // scorro e carico il menu
-          for (i in risultato){
+          for (const i in risultato){
             var paragraph = document.createElement("option");
             paragraph.textContent= risultato[i]
             paragraph.value = risultato[i]
