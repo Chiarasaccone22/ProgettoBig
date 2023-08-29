@@ -103,7 +103,7 @@ def connMongo():
         voli_lista.append(documento)
     return jsonify(voli_lista) """
     
-    return Response( json_util.dumps(voli), mimetype='application/json')
+    return json_util.dumps(voli)
     #return render_template('index.html',posts=lista)
 
 
