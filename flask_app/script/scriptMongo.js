@@ -1,3 +1,5 @@
+const menuMongo = document.getElementById('menuMongo');
+
 async function caricamentoMongo(){
     //const button = document.getElementById('myButton');
 
@@ -6,19 +8,20 @@ async function caricamentoMongo(){
     // Esegui lo script al click del bottone
 
     // carico menu a tendina 2
-    const outputElement2 = document.getElementById('menu2');
-
-    const response2 = await fetch(`http://localhost:8080/connMongo`, { method: 'GET', headers: { 'Accept': 'application/json',},
-    }).then(response2 => {
-      const mongoJson = response2.json()
+    // faccio richiesta http
+    const response = await fetch(`http://localhost:8080/connMongo`, { method: 'GET', headers: { 'Accept': 'application/json',},
+    }).then(response => {
+      // risposta in json
+      const mongoJson = response.json()
       mongoJson.then(risultato =>{
         console.log(risultato[0])
         risultato = risultato[0]
+        // carico menu
         for (i in risultato){
           //console.log(risultato[i])
           var paragraph = document.createElement("option");
           paragraph.textContent= risultato[i]['AIRPORT']
-          outputElement2.appendChild(paragraph)
+          menuMongo.appendChild(paragraph)
           //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
         }
       })
