@@ -32,7 +32,7 @@ function prova(){
         console.log(risultato[0])
         risultato = risultato[0]
         for (i in risultato){
-          console.log(risultato[i])
+          //console.log(risultato[i])
           var paragraph = document.createElement("option");
           paragraph.textContent= risultato[i]['AIRPORT']
           outputElement2.appendChild(paragraph)
@@ -41,15 +41,28 @@ function prova(){
       })
     })
 
-    /* for (i in dataArray){
-        console.log('ciao')
-        console.log(dataArray[i])
-        var paragraph = document.createElement("option");
-        paragraph.textContent= dataArray[i]
-        outputElement.appendChild(paragraph)
-        //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
-    } 
-    })*/
+
+    // carico menu a tendina 3
+    const outputElement3 = document.getElementById('menu3');
+
+    const response3 = fetch(`http://localhost:8080/connDynamo`, { method: 'GET', headers: { 'Accept': 'application/json',},
+    }).then(response3 => {
+      const dynamoJson = response3.json()
+      dynamoJson.then(risultato =>{
+        console.log(risultato['Items'])
+        risultato = risultato['Items']
+        for (i in risultato){
+          //console.log(risultato[i])
+          var paragraph = document.createElement("option");
+          paragraph.textContent= risultato[i]['name']
+          outputElement3.appendChild(paragraph)
+          //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
+        }
+      })
+    })
+
+
+    
 }
 
 window.onload = prova;
