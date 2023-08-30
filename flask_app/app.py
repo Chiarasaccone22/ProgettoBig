@@ -136,7 +136,8 @@ def connCassandra():
     session = connessioneCassandra
     session.execute('USE ProgettoBig')
     rows = session.execute('SELECT * FROM volint')
-    return jsonify(rows)
+    return json_util.dumps(rows)
+    #return jsonify(rows)
     #return render_template('index.html', posts=rows)
 
 
@@ -147,7 +148,8 @@ def caricamentoCassandraDB():
     cassandra = caricamentoCassandra.caricamentodb(connessioneCassandra)
     cassandra.execute('USE ProgettoBig')
     rows = cassandra.execute('SELECT * FROM volint')
-    return jsonify(rows)
+    return json_util.dumps(rows)
+    #return jsonify(rows)
     #return render_template('index.html', posts=rows)
 
 

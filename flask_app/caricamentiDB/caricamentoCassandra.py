@@ -1,24 +1,31 @@
 import csv
+import logging
 
 
 def caricamentodb(connessione):
     # connessione a cassandra
     session = connessione
-    """  # imposto ambiente di lavoro dove sono la table
+    # imposto ambiente di lavoro dove sono la table
     # Query per verificare l'esistenza di un keyspace
-    keyspace_name = "ProgettoBig"
+    keyspace_name = "progettobig"
     query = f"SELECT keyspace_name FROM system_schema.keyspaces WHERE keyspace_name = '{keyspace_name}'"
-    result = session.execute(query)
+    result = list(session.execute(query))
 
-    if not(result.one()):
+    if len(result)==1:
+        logging.critical('Non faccio nulla...')
+        logging.critical(result)
+    else:
+        logging.critical('Creo keyspace name...')
+        logging.critical(result)
         query = f"CREATE KEYSPACE {keyspace_name} WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': 1}}"
         session.execute(query)
+
     query = f"USE {keyspace_name}"
-    session.execute(query) """
+    session.execute(query)
 
     session.execute('USE ProgettoBig')
-    # se non c'è crea table altrimenti mantiene
-    session.execute('CREATE TABLE IF NOT EXISTS volint (anno int, mese int, giorno int, giorno_settimana int, compagnia text, volo_id int, aeromobile text, origine text, destinazione text, ritardo_partenza int, transito_pista_decollo int, durata_prevista int, durata int, tempo_volo int, distanza int, transito_pista_atterraggio int, ritardo_arrivo int, deviazione int, cancellato int, motivo_cancellazione text, ritardo_malfunzionamento int, ritardo_sicurezza int, ritardo_compagnia int, ritardo_aereo int, ritardo_maltempo int, PRIMARY KEY(volo_id))')
+    # se non c'è crea table altrimenti mantiene                                                                                                                                                                                                   
+    session.execute('CREATE TABLE IF NOT EXISTS volint (anno text, mese text, giorno text, giorno_settimana text, compagnia text, volo_id text, aeromobile text, origine text, destinazione text, ritardo_partenza text, transito_pista_decollo text, durata_prevista text, durata text, tempo_volo text, distanza text, transito_pista_atterraggio text, ritardo_arrivo text, deviazione text, cancellato text, motivo_cancellazione text, ritardo_malfunzionamento text, ritardo_sicurezza text, ritardo_compagnia text, ritardo_aereo text, ritardo_maltempo text, PRIMARY KEY(volo_id))')
  
     """  with open('./intervalli_1000.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
@@ -66,7 +73,7 @@ def caricamentodb(connessione):
             ritardo_maltempo=row[24]
             
 
-            query = f"INSERT INTO volint (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo) VALUES (%i, %i, %i, %i, %s, %i, %s, %s, %s, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %s, %i, %i, %i, %i, %i)"  # Sostituisci con il nome della tua tabella e le colonne corrispondenti
+            query = f"INSERT INTO volint (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"  # Sostituisci con il nome della tua tabella e le colonne corrispondenti
             session.execute(query, (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo))  # Sostituisci con i valori da inserire
 
 
