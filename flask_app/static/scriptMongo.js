@@ -1,5 +1,22 @@
 const menuMongo = document.getElementById('menuMongo');
 
+function selezioneAeroporto(){
+
+  menuMongo.addEventListener("change", function() {
+    // prendo valore assegnato all'opzione
+    console.log(menuMongo[menuMongo.selectedIndex].value)
+    aeroporto=menuMongo[menuMongo.selectedIndex].value
+    // invoco metodo del backend
+    const response = fetch(`http://localhost:8080/selectmongo/`+aeroporto, { method: 'GET', headers: { 'Accept': 'application/json',},
+      }).then(response => {
+        mongoJson= response.json()
+        mongoJson.then(risultato =>{
+          console.log(risultato)
+        })
+        })
+  });
+}
+
 async function caricamentoMongo(){
     //const button = document.getElementById('myButton');
 
@@ -21,6 +38,7 @@ async function caricamentoMongo(){
           //console.log(risultato[i])
           var paragraph = document.createElement("option");
           paragraph.textContent= risultato[i]['AIRPORT']
+          paragraph.value = risultato[i]['IATA_CODE']
           menuMongo.appendChild(paragraph)
           //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
         }
