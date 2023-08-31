@@ -9,11 +9,11 @@ function selezionePartenza(){
     // invoco metodo del backend
     const response = fetch(`http://localhost:8080/selectpostgres/`+partenzaPrevista, { method: 'GET', headers: { 'Accept': 'application/json',},
       }).then(response => {
-        const postgresJson=response.json()
-        postgresJson.then(risultato => {
-
+        postgresJson= response.json()
+        postgresJson.then(risultato =>{
+          console.log(risultato)
         })
-      })
+        })
   });
 }
 
