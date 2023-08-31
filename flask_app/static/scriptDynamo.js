@@ -1,21 +1,21 @@
 const menuDynamo = document.getElementById('menuDynamo');
 
-/* function selezioneDynamo(){
+function selezioneCompagnia(){
 
   menuDynamo.addEventListener("change", function() {
     // prendo valore assegnato all'opzione
     console.log(menuDynamo[menuDynamo.selectedIndex].value)
-    aeroporto=menuPostgres[menuDynamo.selectedIndex].value
+    compagnia=menuDynamo[menuDynamo.selectedIndex].value
     // invoco metodo del backend
-    const response = fetch(`http://localhost:8080/selectdynamo/`+aeroporto, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = fetch(`http://localhost:8080/selectdynamo/`+compagnia, { method: 'GET', headers: { 'Accept': 'application/json',},
       }).then(response => {
-        const dynamoJson=response.json()
-        dynamoJson.then(risultato => {
-
+        dynamoJson= response.json()
+        dynamoJson.then(risultato =>{
+          console.log(risultato)
         })
-      })
+        })
   });
-} */
+}
 
 async function caricamentoDynamo(){
     //const button = document.getElementById('myButton');
@@ -38,6 +38,7 @@ async function caricamentoDynamo(){
           //console.log(risultato[i])
           var paragraph = document.createElement("option");
           paragraph.textContent= risultato[i]['name']
+          paragraph.value = risultato[i]['compagnia_id']
           menuDynamo.appendChild(paragraph)
           //outputElement.textContent += `Risultato dello script: ${dataArray[i]}`;
         }
@@ -45,5 +46,5 @@ async function caricamentoDynamo(){
     })    
 }
 
-/* window.onload = selezioneDynamo(); */
+selezioneCompagnia();
 window.onload = caricamentoDynamo();

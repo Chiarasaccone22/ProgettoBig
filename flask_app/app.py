@@ -63,7 +63,7 @@ def selectpostgres(partenzaPrevista):
 
 #richiesta postgres
 @app.route('/selectcassandra/<idvolo>', methods=['GET'])
-def selectpostgres(idvolo):
+def selectcassandra(idvolo):
     #estrai il parametro in input con la request
     #param = request.args.get('idvolo')
     param = idvolo
