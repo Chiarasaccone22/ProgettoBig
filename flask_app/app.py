@@ -84,8 +84,9 @@ def connDynamo():
 @app.route('/caricamentoDynamo',methods=['GET'])
 def caricamentoDynamoDB():
     dynamodb=caricamentoDy.caricamentoDynamo(connessioneDynamo)
-    tables = list(dynamodb.tables.all())
-    return jsonify(tables)
+    tabella = dynamodb.Table("compagnieAeree")
+    response = tabella.scan()
+    return jsonify(response)
     #return render_template('index.html', posts=tables)
 
 # Gestione connessione Mongo
