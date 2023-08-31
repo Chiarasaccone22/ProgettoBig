@@ -1,4 +1,4 @@
-from flask import Flask, render_template,jsonify,Response
+from flask import Flask, render_template,jsonify,Response, redirect, url_for,  request
 from waitress import serve
 from py2neo import Graph
 import psycopg2
@@ -36,6 +36,66 @@ def add_cors_headers(response):
 def index():
     logging.debug('Apro le connessioni...')
     return render_template('index.html')
+
+
+#richiesta
+@app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
+def selectpostgres(partenzaPrevista):
+    
+    #estrai il parametro in input con la request
+    #param = request.args.get('partenzaPrevista')
+
+    param = partenzaPrevista
+    params=str(param)
+    
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    
+    cursor = connessionePostgres.cursor()
+
+    
+    # Esecuzione della query con il parametro in input
+    
+    cursor.execute("SELECT volo_id, partenza_prevista FROM volitimes WHERE partenza_prevista = %s" , (params))
+
+
+    results = cursor.fetchall()
+
+    cursor.close()
+    
+    return jsonify(results)
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #Gestione connessione Postgres
