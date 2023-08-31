@@ -41,13 +41,9 @@ def index():
 #richiesta
 @app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
 def selectpostgres(partenzaPrevista):
-    
     #estrai il parametro in input con la request
     #param = request.args.get('partenzaPrevista')
-
     param = partenzaPrevista
-    params=str(param)
-    
     #apri connessione
     connessionePostgres=psycopg2.connect(
         host="postgresDb",
@@ -56,42 +52,14 @@ def selectpostgres(partenzaPrevista):
         password="password",
         database="postgres"
     )
-    
     cursor = connessionePostgres.cursor()
-
-    
     # Esecuzione della query con il parametro in input
-    
-    cursor.execute("SELECT volo_id, partenza_prevista FROM volitimes WHERE partenza_prevista = %s" , (params))
-
-
+    cursor.execute("SELECT volo_id, partenza_prevista FROM volitimes WHERE partenza_prevista = %s" , (param,))
     results = cursor.fetchall()
-
     cursor.close()
     
     return jsonify(results)
    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
