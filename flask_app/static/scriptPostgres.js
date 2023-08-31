@@ -1,4 +1,5 @@
 const menuPostgres = document.getElementById('menuPostgres');
+const output = document.getElementById('output')
 
 function selezionePartenza(){
 
@@ -12,6 +13,12 @@ function selezionePartenza(){
         postgresJson= response.json()
         postgresJson.then(risultato =>{
           console.log(risultato)
+          if (output.firstChild){
+            output.removeChild(output.firstChild)
+          }
+          for (const j in risultato)
+
+            output.textContent+=risultato[j]+document.createElement("br")
         })
         })
   });

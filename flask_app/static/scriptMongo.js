@@ -46,4 +46,5 @@ async function caricamentoMongo(){
     })
 }
 
+selezioneAeroporto();
 window.onload = caricamentoMongo();
