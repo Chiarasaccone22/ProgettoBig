@@ -6,8 +6,8 @@ function selezioneIdVolo(){
     idVolo = menuCassandra[menuCassandra.selectedIndex].value
     const response = fetch(`http://localhost:8080/selectcassandra/`+idVolo, { method: 'GET', headers: { 'Accept': 'application/json',},
       }).then(response => {
-        postgresJson= response.json()
-        postgresJson.then(risultato =>{
+        cassandraJson = response.json()
+        cassandraJson.then(risultato =>{
           console.log(risultato)
         })
         })
