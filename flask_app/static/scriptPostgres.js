@@ -44,5 +44,5 @@ async function caricamentoPostgres(){
     })
 }
 
-window.onload = selezionePartenza();
+selezionePartenza();
 window.onload = caricamentoPostgres();
