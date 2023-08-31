@@ -1,7 +1,17 @@
 const menuCassandra = document.getElementById('menuCassandra');
 
-function selezione(){
-    
+function selezioneIdVolo(){
+  menuCassandra.addEventListener("change",function(){
+    console.log(menuCassandra[menuCassandra.selectedIndex].value)
+    idVolo = menuCassandra[menuCassandra.selectedIndex].value
+    const response = fetch(`http://localhost:8080/selectcassandra/`+idVolo, { method: 'GET', headers: { 'Accept': 'application/json',},
+      }).then(response => {
+        postgresJson= response.json()
+        postgresJson.then(risultato =>{
+          console.log(risultato)
+        })
+        })
+  })
 }
 
 async function caricamentoCassandra(){
@@ -31,5 +41,5 @@ async function caricamentoCassandra(){
     })
 }
 
-window.onload = selezione();
-window.onload = caricamentoCassandra();menuCassandra
+selezioneIdVolo();
+window.onload = caricamentoCassandra();
