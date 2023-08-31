@@ -1,5 +1,22 @@
 const menuDynamo = document.getElementById('menuDynamo');
 
+/* function selezioneDynamo(){
+
+  menuDynamo.addEventListener("change", function() {
+    // prendo valore assegnato all'opzione
+    console.log(menuDynamo[menuDynamo.selectedIndex].value)
+    aeroporto=menuPostgres[menuDynamo.selectedIndex].value
+    // invoco metodo del backend
+    const response = fetch(`http://localhost:8080/selectdynamo/`+aeroporto, { method: 'GET', headers: { 'Accept': 'application/json',},
+      }).then(response => {
+        const dynamoJson=response.json()
+        dynamoJson.then(risultato => {
+
+        })
+      })
+  });
+} */
+
 async function caricamentoDynamo(){
     //const button = document.getElementById('myButton');
 
@@ -28,4 +45,5 @@ async function caricamentoDynamo(){
     })    
 }
 
+/* window.onload = selezioneDynamo(); */
 window.onload = caricamentoDynamo();

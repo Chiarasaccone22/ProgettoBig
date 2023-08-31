@@ -1,9 +1,19 @@
 const menuPostgres = document.getElementById('menuPostgres');
 
-function selezione(){
+function selezionePartenza(){
 
   menuPostgres.addEventListener("change", function() {
-    
+    // prendo valore assegnato all'opzione
+    console.log(menuPostgres[menuPostgres.selectedIndex].value)
+    partenzaPrevista=menuPostgres[menuPostgres.selectedIndex].value
+    // invoco metodo del backend
+    const response = fetch(`http://localhost:8080/selectpostgres/`+partenzaPrevista, { method: 'GET', headers: { 'Accept': 'application/json',},
+      }).then(response => {
+        const postgresJson=response.json()
+        postgresJson.then(risultato => {
+
+        })
+      })
   });
 }
 
@@ -34,5 +44,5 @@ async function caricamentoPostgres(){
     })
 }
 
-window.onload = selezione();
+window.onload = selezionePartenza();
 window.onload = caricamentoPostgres();
