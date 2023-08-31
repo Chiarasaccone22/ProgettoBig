@@ -61,7 +61,7 @@ def selectpostgres(partenzaPrevista):
     return jsonify(results)
    
 
-#richiesta postgres
+#richiesta cassandra
 @app.route('/selectcassandra/<idvolo>', methods=['GET'])
 def selectcassandra(idvolo):
     #estrai il parametro in input con la request
@@ -74,8 +74,25 @@ def selectcassandra(idvolo):
     rows = session.execute('SELECT * FROM voliInt WHERE volo_id= %s',  (param,))
     return json_util.dumps(rows)
     
-    
- 
+#richiesta dynamo   
+@app.route('/selectcassandra/<compagniaid>',methods=['GET'])
+def connDynamo(compagniaid):
+    #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
+    dynamodb = connessioneDynamo
+    param=compagniaid
+    table_name = "compagnieAeree"
+    response = dynamodb.query(
+    TableName=table_name,
+    KeyConditionExpression='compagnia_id = :param',
+    ExpressionAttributeValues={
+        ':param': {'S': param}
+    }
+)
+
+    items = response.get('Items', [])
+
+    return jsonify(items)
+    #return render_template('index.html', posts=tables) 
    
 
 
