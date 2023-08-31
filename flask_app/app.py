@@ -41,7 +41,6 @@ def index():
 #Gestione connessione Postgres
 @app.route('/connPostgres',methods=['GET'])
 def connPostgres():
-
     connessionePostgres=psycopg2.connect(
         host="postgresDb",
         port="5432",
@@ -52,6 +51,7 @@ def connPostgres():
     cursor = connessionePostgres.cursor()
     cursor.execute("SELECT * FROM volitimes")
     results = cursor.fetchall()
+    cursor.close()
     return jsonify(results)
     #return render_template('index.html', posts=results)
 
@@ -59,7 +59,6 @@ def connPostgres():
 # Gestione del caricamento dei dataset nel database Postgres
 @app.route('/caricamentoPostgres',methods=['GET'])
 def caricamentoPostgresDB():
-
     connessionePostgres=psycopg2.connect(
         host="postgresDb",
         port="5432",
@@ -70,6 +69,7 @@ def caricamentoPostgresDB():
     #carichiamo il database con i csv in caricamentoPos e facciamo una query select
     results=caricamentoPos.caricamentoPostgres(connessionePostgres)
     #cursor = postgres.cursor()
+
     return jsonify(results)
     #return render_template('index.html', posts=results)
 
