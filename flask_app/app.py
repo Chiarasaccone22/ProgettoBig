@@ -17,13 +17,6 @@ logging.basicConfig(level=logging.INFO)
 
 #creiamo variabili globali di connessione inizializzandole 
 
-connessionePostgres=psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
 connessioneMongo= pymongo.MongoClient("mongodb://mongoDb:27017/") 
 
 connessioneNeo=Graph("bolt://neo4jDbGUI:7687")
@@ -49,8 +42,15 @@ def index():
 @app.route('/connPostgres',methods=['GET'])
 def connPostgres():
 
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
     cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT * FROM voliTimes")
+    cursor.execute("SELECT * FROM volitimes")
     results = cursor.fetchall()
     return jsonify(results)
     #return render_template('index.html', posts=results)
@@ -59,11 +59,17 @@ def connPostgres():
 # Gestione del caricamento dei dataset nel database Postgres
 @app.route('/caricamentoPostgres',methods=['GET'])
 def caricamentoPostgresDB():
+
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
     #carichiamo il database con i csv in caricamentoPos e facciamo una query select
-    postgres=caricamentoPos.caricamentoPostgres(connessionePostgres)
-    cursor = postgres.cursor()
-    cursor.execute("SELECT * FROM voliTimes")
-    results = cursor.fetchall()
+    results=caricamentoPos.caricamentoPostgres(connessionePostgres)
+    #cursor = postgres.cursor()
     return jsonify(results)
     #return render_template('index.html', posts=results)
 
