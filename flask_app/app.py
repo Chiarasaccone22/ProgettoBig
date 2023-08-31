@@ -78,19 +78,31 @@ def selectcassandra(idvolo):
 #richiesta dynamo   
 @app.route('/selectdynamo/<compagniaid>',methods=['GET'])
 def selectdynamo(compagniaid):
-    #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
+    #connessione
     dynamodb = connessioneDynamo
+    #parametro
     param=compagniaid
-    
     table = dynamodb.Table("compagnieAeree")
+    #query
     response = table.query(KeyConditionExpression= Key('compagnia_id').eq(param,))
-
     items = response.get('Items', [])
     # items = response['Items']
-
     return jsonify(items)
-    #return render_template('index.html', posts=tables) 
-   
+
+
+#richiesta mongo   
+@app.route('/selectmongo/<iatacode>',methods=['GET'])
+def selectmongo(iatacode):
+    #parametro
+    param=iatacode
+    #connessione
+    mongo = connessioneMongo
+    dataset = mongo["aeroporti"]
+    tabella = dataset["aeroporto"]
+    #query
+    myquery = { "IATA_CODE": param }
+    result = tabella.find(myquery)
+    return json_util.dumps(result)
 
 
 
