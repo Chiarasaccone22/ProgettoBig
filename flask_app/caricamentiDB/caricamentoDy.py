@@ -75,8 +75,8 @@ def caricamentoDynamo(connessione):
     # Itera attraverso le righe del DataFrame e inserisci i dati in DynamoDB
     for index, row in data.iterrows():
         item = {
-            'compagnia_id': str(row['compagnia_id']),  # Sostituisci con il nome della chiave primaria
-            'name': str(row['name']),         # Sostituisci con i nomi degli attributi
+            'compagnia_id': str(row['IATA_CODE']),  # Sostituisci con il nome della chiave primaria
+            'name': str(row['AIRLINE']),         # Sostituisci con i nomi degli attributi
             }
         
         # Inserisci l'elemento nella tabella DynamoDB
