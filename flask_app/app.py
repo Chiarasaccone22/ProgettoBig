@@ -50,7 +50,7 @@ def index():
 def connPostgres():
 
     cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT * FROM voli")
+    cursor.execute("SELECT * FROM voliTimes")
     results = cursor.fetchall()
     return jsonify(results)
     #return render_template('index.html', posts=results)
@@ -62,7 +62,7 @@ def caricamentoPostgresDB():
     #carichiamo il database con i csv in caricamentoPos e facciamo una query select
     postgres=caricamentoPos.caricamentoPostgres(connessionePostgres)
     cursor = postgres.cursor()
-    cursor.execute("SELECT * FROM voli")
+    cursor.execute("SELECT * FROM voliTimes")
     results = cursor.fetchall()
     return jsonify(results)
     #return render_template('index.html', posts=results)
@@ -74,7 +74,7 @@ def connDynamo():
     #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
     dynamodb = connessioneDynamo
     #tables = list(dynamodb.tables.all())
-    tabella = dynamodb.Table("CompagnieAeree")
+    tabella = dynamodb.Table("compagnieAeree")
     response = tabella.scan()
     return jsonify(response)
     #return render_template('index.html', posts=tables)
@@ -94,8 +94,8 @@ def connMongo():
     mongo = connessioneMongo
     lista = mongo.list_database_names()
     #if "voli" in lista:
-    dbVoli = mongo["aereoporti"]
-    collezioneVolo = dbVoli["aereoporto"]
+    dbVoli = mongo["aeroporti"]
+    collezioneVolo = dbVoli["aeroporto"]
     voli = {collezioneVolo.find()}
     """ voli_lista = []
     for documento in voli:
@@ -135,7 +135,7 @@ def connNeo():
 def connCassandra():
     session = connessioneCassandra
     session.execute('USE ProgettoBig')
-    rows = session.execute('SELECT * FROM volint')
+    rows = session.execute('SELECT * FROM voliInt')
     return json_util.dumps(rows)
     #return jsonify(rows)
     #return render_template('index.html', posts=rows)
@@ -147,7 +147,7 @@ def caricamentoCassandraDB():
    # Carichiamo il database con i csv in caricamentoCassandra e restituiamo tutte le ennuple
     cassandra = caricamentoCassandra.caricamentodb(connessioneCassandra)
     cassandra.execute('USE ProgettoBig')
-    rows = cassandra.execute('SELECT * FROM volint')
+    rows = cassandra.execute('SELECT * FROM voliInt')
     return json_util.dumps(rows)
     #return jsonify(rows)
     #return render_template('index.html', posts=rows)
