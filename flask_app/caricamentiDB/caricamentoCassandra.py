@@ -23,9 +23,9 @@ def caricamentodb(connessione):
     query = f"USE {keyspace_name}"
     session.execute(query)
 
-    session.execute('USE ProgettoBig')
+    #session.execute('USE ProgettoBig')
     # se non c'è crea table altrimenti mantiene                                                                                                                                                                                                   
-    session.execute('CREATE TABLE IF NOT EXISTS volint (anno text, mese text, giorno text, giorno_settimana text, compagnia text, volo_id text, aeromobile text, origine text, destinazione text, ritardo_partenza text, transito_pista_decollo text, durata_prevista text, durata text, tempo_volo text, distanza text, transito_pista_atterraggio text, ritardo_arrivo text, deviazione text, cancellato text, motivo_cancellazione text, ritardo_malfunzionamento text, ritardo_sicurezza text, ritardo_compagnia text, ritardo_aereo text, ritardo_maltempo text, PRIMARY KEY(volo_id))')
+    session.execute('CREATE TABLE IF NOT EXISTS voliInt (anno text, mese text, giorno text, giorno_settimana text, compagnia text, volo_id text, aeromobile text, origine text, destinazione text, ritardo_partenza text, transito_pista_decollo text, durata_prevista text, durata text, tempo_volo text, distanza text, transito_pista_atterraggio text, ritardo_arrivo text, deviazione text, cancellato text, motivo_cancellazione text, ritardo_malfunzionamento text, ritardo_sicurezza text, ritardo_compagnia text, ritardo_aereo text, ritardo_maltempo text, PRIMARY KEY(volo_id))')
  
     """  with open('./intervalli_1000.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
@@ -35,7 +35,7 @@ def caricamentodb(connessione):
             #data = line.strip().split(',')
             listacolonne.append(csv_reader[line])
             #data = [int(x) if x.isdigit() else x for x in data]
-            query = "INSERT INTO volint (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO voliInt (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             session.execute(query, data) """
 
     # legge file csv
@@ -73,7 +73,7 @@ def caricamentodb(connessione):
             ritardo_maltempo=row[24]
             
 
-            query = f"INSERT INTO volint (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"  # Sostituisci con il nome della tua tabella e le colonne corrispondenti
+            query = f"INSERT INTO voliInt (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"  # Sostituisci con il nome della tua tabella e le colonne corrispondenti
             session.execute(query, (anno, mese, giorno, giorno_settimana, compagnia, volo_id, aeromobile, origine, destinazione, ritardo_partenza, transito_pista_decollo, durata_prevista, durata, tempo_volo, distanza, transito_pista_atterraggio, ritardo_arrivo, deviazione, cancellato, motivo_cancellazione, ritardo_malfunzionamento, ritardo_sicurezza, ritardo_compagnia, ritardo_aereo, ritardo_maltempo))  # Sostituisci con i valori da inserire
 
 

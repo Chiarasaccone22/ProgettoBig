@@ -20,7 +20,7 @@ import pandas as pd
 def caricamentoDynamo(connessione):
     dynamodb = connessione
 
-    table_name='CompagnieAeree'
+    table_name='compagnieAeree'
 
     # Controlla se la tabella esiste già
     # Ottieni la lista delle tabelle
