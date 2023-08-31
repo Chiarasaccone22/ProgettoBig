@@ -19,7 +19,7 @@
     
 
     <fieldset>
-      <legend>Postgres</legend>
+      <legend>Postgres: Partenza prevista</legend>
       <select name="siti" id="menuPostgres">
 <!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
  -->      
@@ -27,7 +27,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>Mongo</legend>
+      <legend>Mongo: Aeroporti</legend>
       <select name="siti" id="menuMongo">
 <!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
  --> 
@@ -35,7 +35,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>Dynamo</legend>
+      <legend>Dynamo: Compagnie</legend>
       <select name="siti" id="menuDynamo">
 <!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
  --> 
@@ -46,16 +46,23 @@
     </fieldset>
 
     <fieldset>
-      <legend>Cassandra</legend>
+      <legend>Cassandra: Id Volo</legend>
       <select name="siti" id="menuCassandra">
 <!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
  --> 
      </select>
     </fieldset>
 
-    <script         src="{{ url_for('static', filename='scriptPostgres.js') }}"
+
+    <script src="../static/scriptPostgres.js" ></script>
+    <script src="../static/scriptCassandra.js"></script>
+    <script src="../static/scriptMongo.js"></script>
+    <script src="../static/scriptDynamo.js"></script>
+
+<!--     <script         src="{{ url_for('static', filename='scriptPostgres.js') }}"
         type="module"
     ></script>
+    
     <script         src="{{ url_for('static', filename='scriptMongo.js') }}"
         type="module"
     ></script>
@@ -64,6 +71,7 @@
     ></script>
     <script         src="{{ url_for('static', filename='scriptCassandra.js') }}"
     type="module"
-></script>
+></script> -->
+
   </body>
 </html>

@@ -1,4 +1,4 @@
-const menuPostgres = document.getElementById('menuCassandra');
+const menuCassandra = document.getElementById('menuCassandra');
 
 function selezione(){
     
@@ -22,8 +22,8 @@ async function caricamentoCassandra(){
           // scorro e carico il menu
           for (const i in risultato){
             var paragraph = document.createElement("option");
-            paragraph.textContent= risultato[i]
-            paragraph.value = risultato[i]
+            paragraph.textContent= risultato[i][0]
+            paragraph.value = risultato[i][0]
             menuCassandra.appendChild(paragraph)
             //menuPostgres.textContent += `Risultato dello script: ${dataArray[i]}`;
         }
@@ -32,4 +32,4 @@ async function caricamentoCassandra(){
 }
 
 window.onload = selezione();
-window.onload = caricamentoCassandra();
+window.onload = caricamentoCassandra();menuCassandra

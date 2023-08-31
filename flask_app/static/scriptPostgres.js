@@ -25,8 +25,8 @@ async function caricamentoPostgres(){
           // scorro e carico il menu
           for (const i in risultato){
             var paragraph = document.createElement("option");
-            paragraph.textContent= risultato[i]
-            paragraph.value = risultato[i]
+            paragraph.textContent= risultato[i][9]
+            paragraph.value = risultato[i][9]
             menuPostgres.appendChild(paragraph)
             //menuPostgres.textContent += `Risultato dello script: ${dataArray[i]}`;
         }
