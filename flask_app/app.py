@@ -3,6 +3,7 @@ from waitress import serve
 from py2neo import Graph
 import psycopg2
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 import pymongo
 from cassandra.cluster import Cluster
 import pandas as pd
@@ -80,16 +81,12 @@ def selectdynamo(compagniaid):
     #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
     dynamodb = connessioneDynamo
     param=compagniaid
-    table_name = "compagnieAeree"
-    response = dynamodb.query(
-    TableName=table_name,
-    KeyConditionExpression='compagnia_id = :param',
-    ExpressionAttributeValues={
-        ':param': {'S': param}
-    }
-    )
+    
+    table = dynamodb.Table("compagnieAeree")
+    response = table.query(KeyConditionExpression= Key('compagnia_id').eq(param,))
 
     items = response.get('Items', [])
+    # items = response['Items']
 
     return jsonify(items)
     #return render_template('index.html', posts=tables) 
