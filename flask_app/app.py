@@ -38,7 +38,7 @@ def index():
     return render_template('index.html')
 
 
-#richiesta
+#richiesta postgres
 @app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
 def selectpostgres(partenzaPrevista):
     #estrai il parametro in input con la request
@@ -61,7 +61,22 @@ def selectpostgres(partenzaPrevista):
     return jsonify(results)
    
 
-
+#richiesta postgres
+@app.route('/selectcassandra/<idvolo>', methods=['GET'])
+def selectpostgres(idvolo):
+    #estrai il parametro in input con la request
+    #param = request.args.get('idvolo')
+    param = idvolo
+    #apri connessione
+    session = connessioneCassandra
+    session.execute('USE ProgettoBig')
+    # Esecuzione della query con il parametro in input
+    rows = session.execute('SELECT * FROM voliInt WHERE volo_id= %s',  (param,))
+    return json_util.dumps(rows)
+    
+    
+ 
+   
 
 
 
