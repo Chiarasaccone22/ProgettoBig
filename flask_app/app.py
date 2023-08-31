@@ -75,8 +75,8 @@ def selectcassandra(idvolo):
     return json_util.dumps(rows)
     
 #richiesta dynamo   
-@app.route('/selectcassandra/<compagniaid>',methods=['GET'])
-def connDynamo(compagniaid):
+@app.route('/selectdynamo/<compagniaid>',methods=['GET'])
+def selectdynamo(compagniaid):
     #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
     dynamodb = connessioneDynamo
     param=compagniaid
@@ -87,7 +87,7 @@ def connDynamo(compagniaid):
     ExpressionAttributeValues={
         ':param': {'S': param}
     }
-)
+    )
 
     items = response.get('Items', [])
 
