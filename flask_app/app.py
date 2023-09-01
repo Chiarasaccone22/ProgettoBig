@@ -55,7 +55,8 @@ def selectpostgres(partenzaPrevista):
     )
     cursor = connessionePostgres.cursor()
     # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT * FROM volitimes WHERE partenza_prevista = %s" , (param,))
+    cursor.execute("SELECT volo_id, compagnia, destinazione FROM volitimes WHERE partenza_prevista = %s" , (param,))
+    #cursor.execute("SELECT * FROM volitimes WHERE partenza_prevista = %s" , (param,))
     results = cursor.fetchall()
     cursor.close()
     
@@ -80,6 +81,7 @@ def selectpostgrescascata(partenzaPrevista):
     # Esecuzione della query con il parametro in input
     cursor.execute("SELECT volo_id, compagnia, destinazione FROM volitimes WHERE partenza_prevista = %s" , (param,))
     results = cursor.fetchall()
+    logging.critical(results)
     cursor.close()
 
     #file json di output
@@ -104,7 +106,8 @@ def selectpostgrescascata(partenzaPrevista):
             result=selectmongo(iatacode[2])
             output["resultMongo"].append(result)
     
-    
+    logging.critical(output)
+
     return jsonify(output) 
    
 
