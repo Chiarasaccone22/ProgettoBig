@@ -86,16 +86,16 @@ def selectpostgrescascata(partenzaPrevista):
 
     #file json di output
     output={
-        'resultMongo': '',
-        'resultDynamo': '',
-        'resultCassandra': '',
+        'resultMongo': [],
+        'resultDynamo': [],
+        'resultCassandra': [],
 
     }
 
     logging.critical(results)
     #interrogazione a cassandra con il volo_id
     for volo in results:
-            result=selectcassandra(int(volo[0]))
+            result=selectcassandra(str(volo[0]))
             output["resultCassandra"].append(result)
 
     #interrogazione a dynamo con la compagnia aerea
@@ -136,7 +136,8 @@ def selectdynamo(compagniaid):
     response = table.query(KeyConditionExpression= Key('compagnia_id').eq(param,))
     items = response.get('Items', [])
     # items = response['Items']
-    return jsonify(items)
+    return items
+    #return jsonify(items)
 
 
 #richiesta mongo   
