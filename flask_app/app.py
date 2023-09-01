@@ -89,6 +89,8 @@ def selectpostgrescascata(partenzaPrevista):
         'resultCassandra': '',
 
     }
+
+    logging.critical(results)
     #interrogazione a cassandra con il volo_id
     for volo in results:
             result=selectcassandra(int(volo[0]))
@@ -104,7 +106,7 @@ def selectpostgrescascata(partenzaPrevista):
             result=selectmongo(iatacode[2])
             output["resultMongo"].append(result)
     
-    
+    logging.critical(output)
     return jsonify(output) 
    
 
@@ -163,7 +165,7 @@ def connPostgres():
         database="postgres"
     )
     cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT DISTINCT partenza_prevista FROM volitimes")
+    cursor.execute("SELECT DISTINCT partenza_prevista FROM volitimes ORDER BY partenza_prevista")
     results = cursor.fetchall()
     cursor.close()
     return jsonify(results)
