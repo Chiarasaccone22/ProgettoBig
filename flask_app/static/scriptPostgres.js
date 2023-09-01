@@ -17,8 +17,7 @@ function selezionePartenza(){
             output.removeChild(output.firstChild)
           }
           for (const j in risultato){
-            output.textContent+=risultato[j]
-            output.appendChild(document.createElement("br"))
+            output.innerHTML+=risultato[j]+"<br>"
           }
         })
         })
