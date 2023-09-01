@@ -91,7 +91,7 @@ def selectpostgrescascata(partenzaPrevista):
     }
     #interrogazione a cassandra con il volo_id
     for volo in results:
-            result=selectcassandra(volo[0])
+            result=selectcassandra(int(volo[0]))
             output["resultCassandra"].append(result)
 
     #interrogazione a dynamo con la compagnia aerea
