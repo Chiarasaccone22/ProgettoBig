@@ -1,4 +1,4 @@
-const menuCassandra = document.getElementById('menuCassandra');
+//const menuCassandra = document.getElementById('menuCassandra');
 
 function selezioneIdVolo(){
   menuCassandra.addEventListener("change",function(){
@@ -43,3 +43,8 @@ async function caricamentoCassandra(){
 
 selezioneIdVolo();
 window.onload = caricamentoCassandra();
+window.menuCassandra = document.getElementById('menuCassandra');
+window.menuPostgres = document.getElementById('menuPostgres');
+window.menuMongo = document.getElementById('menuMongo');
+window.menuDynamo = document.getElementById('menuDynamo');
+window.output = document.getElementById('output');

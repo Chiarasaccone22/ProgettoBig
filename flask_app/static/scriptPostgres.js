@@ -1,24 +1,63 @@
-const menuPostgres = document.getElementById('menuPostgres');
-const output = document.getElementById('output')
+/* import { menuDynamo } from './scriptDynamo.js';
+import { menuCassandra } from './scriptCassandra.js';
+import { menuMongo } from './scriptMongo.js'; */
+
+
+
+//const menuPostgres = document.getElementById('menuPostgres');
+// const output = document.getElementById('output')
 
 function selezionePartenza(){
 
   menuPostgres.addEventListener("change", function() {
     // prendo valore assegnato all'opzione
-    console.log(menuPostgres[menuPostgres.selectedIndex].value)
-    partenzaPrevista=menuPostgres[menuPostgres.selectedIndex].value
+    const partenzaPrevista=menuPostgres[menuPostgres.selectedIndex].value
+    console.log(partenzaPrevista)
     // invoco metodo del backend
-    const response = fetch(`http://localhost:8080/selectpostgres/`+partenzaPrevista, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = fetch(`http://localhost:8080/selectpostgrescascata/`+partenzaPrevista, { method: 'GET', headers: { 'Accept': 'application/json',},
       }).then(response => {
-        postgresJson= response.json()
+        var postgresJson= response.json()
         postgresJson.then(risultato =>{
-          console.log(risultato)
+
+          console.log(risultato['resultCassandra'])
+          // carico menu di cassandra 
+          for (const valCassandra in risultato['resultCassandra']){
+            var paragraph = document.createElement("option");
+            console.log(valCassandra)
+            /* paragraph.textContent= risultato[i][0]
+            paragraph.value = risultato[i][0]
+            window.menuCassandra.appendChild(paragraph) */
+          } 
+
+  
+          console.log(risultato['resultMongo'])
+          // carico menu di mongo 
+          for (const valMongo in risultato['resultMongo']){
+            var paragraph = document.createElement("option");
+            console.log(valMongo)
+            /* paragraph.textContent= risultato[i][0]
+            paragraph.value = risultato[i][0]
+            window.menuCassandra.appendChild(paragraph) */
+          } 
+
+          console.log(risultato['resultDynamo'])
+          // carico menu di cassandra 
+          for (const valDynamo in risultato['resultDynamo']){
+            var paragraph = document.createElement("option");
+            console.log(valDynamo)
+            /* paragraph.textContent= risultato[i][0]
+            paragraph.value = risultato[i][0]
+            window.menuCassandra.appendChild(paragraph) */
+          } 
+
+          /*
           if (output.firstChild){
             output.removeChild(output.firstChild)
           }
           for (const j in risultato){
             output.innerHTML+=risultato[j]+"<br>"
-          }
+          } */
+
         })
         })
   });
@@ -53,3 +92,8 @@ async function caricamentoPostgres(){
 
 selezionePartenza();
 window.onload = caricamentoPostgres();
+window.menuPostgres = document.getElementById('menuPostgres');
+window.menuCassandra = document.getElementById('menuCassandra');
+window.menuMongo = document.getElementById('menuMongo');
+window.menuDynamo = document.getElementById('menuDynamo');
+window.output = document.getElementById('output');
