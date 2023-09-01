@@ -269,6 +269,7 @@ def selectdynamocascata(compagniaid):
     #query
     response = table.query(KeyConditionExpression= Key('compagnia_id').eq(param,))
     items = response.get('Items', [])
+    logging.critical('stampa degli items risultato della compagnia')
     logging.critical(items)
 
     #file json di output
@@ -284,9 +285,9 @@ def selectdynamocascata(compagniaid):
     logging.critical(items)
     #ora nel mio result io ho le ennuple con IATACODE (codice aereoporto), nome aeroporto ecc
 
-    #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
-    for destinazione in items:
-        result=selectpostgrescompagniaid(destinazione[0])
+    #interrogazione a postgres con  la compagnia aerea, mi restituirà tutti i voli che hanno come compagnia quella compagnia aerea passata in input
+    for compagniaid in items:
+        result=selectpostgrescompagniaid(compagniaid['compagnia_id'])
         output["resultPostgres"].append(result)
         appoggio.append(result)
 
