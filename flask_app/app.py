@@ -210,25 +210,16 @@ def selectmongocascata(iatacode):
 
     #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in results:
-        logging.critical('dESTINAZIONE IATACODE...')
-        logging.critical(destinazione['IATA_CODE'])
         result=selectpostgresdestinazione(destinazione['IATA_CODE'])
-        #interrogazine cassandra
-        risultato=selectcassandradestinazione(destinazione['IATA_CODE'])
-        #inserimento su resultpostgres
         output["resultPostgres"].append(result)
-         #inserimento su result cassandra
-        output["resultCassandra"].append(risultato)
-        logging.critical('ricerca in cassandra con iatacode....')
-        logging.critical(risultato)
         appoggio.append(result)
-
-    """ #interrogazione a cassandra con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
-    for destinazione in results:
-        logging.critical('ricerca in cassandfra con iatacode')
-        logging.critical(destinazione['IATA_CODE'])
-        result=selectcassandradestinazione(destinazione['IATA_CODE'])
-        output["resultCassandra"].append(result) """
+    
+    #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
+    #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
+    for voloid in appoggio[0]:
+        logging.critical(voloid[5])
+        result=selectcassandra(voloid[5])
+        output["resultCassandra"].append(result)
     
     #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LO IATA CODE 
@@ -245,19 +236,6 @@ def selectmongocascata(iatacode):
     return jsonify(output) 
 
 ########################################################################
-
-#METODO semplice select cassandra tramite destinazione
-def selectcassandradestinazione(destinazione):
-    #estrai il parametro in input con la request
-    param = destinazione
-    #apri connessione
-    session = connessioneCassandra
-    session.execute('USE ProgettoBig')
-    # Esecuzione della query con il parametro in input
-    rows = session.execute('SELECT * FROM voliInt WHERE destinazione= %s',  (param,))
-    return json_util.dumps(rows)
-
-#########################################################################
 
 #METODO semplice select postgres tramite destinazione
 def selectpostgresdestinazione(destinazione):
@@ -308,39 +286,29 @@ def selectdynamocascata(compagniaid):
 
     #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in items:
-            result=selectpostgrescompagniaid(destinazione[0])
-            output["resultPostgres"].append(result)
-            appoggio.append(result)
+        result=selectpostgrescompagniaid(destinazione[0])
+        output["resultPostgres"].append(result)
+        appoggio.append(result)
 
-    #interrogazione a cassandra con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
-    for destinazione in items:
-            result=selectcassandracompagniaid(destinazione[0])
-            output["resultCassandra"].append(result)
+    #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
+    #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
+    for voloid in appoggio[0]:
+        logging.critical(voloid[5])
+        result=selectcassandra(voloid[5])
+        output["resultCassandra"].append(result)
     
     #NB: POICHE' MONGO CHE HA GLI AEROPORTI NON HA CONNESSIONI CON LE COMPAGNIE AEREE  
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LA COMPAGNIA AEREA
     #E MANDIAMO A MONGO LO IATA CODE DEGLI AEREOPORTI DEI VOLI RISULTANTI (AEROPORTI DI DESTINAZIONE)
-    for compagniaid in appoggio:
-            result=selectdynamo(compagniaid[8])
-            output["resultMongo"].append(result)
+    for iatacode in appoggio[0]:
+        result=selectdynamo(iatacode[8])
+        output["resultMongo"].append(result)
 
     
     logging.critical(output)
     return jsonify(output) 
 
 
-########################################################################
-
-#METODO semplice select cassandra tramite compagniaid
-def selectcassandracompagniaid(compagniaid):
-    #estrai il parametro in input con la request
-    param = compagniaid
-    #apri connessione
-    session = connessioneCassandra
-    session.execute('USE ProgettoBig')
-    # Esecuzione della query con il parametro in input
-    rows = session.execute('SELECT * FROM voliInt WHERE compagniaid= %s',  (param,))
-    return json_util.dumps(rows)
 
 #########################################################################
 
