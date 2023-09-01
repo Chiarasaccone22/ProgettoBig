@@ -163,7 +163,7 @@ def connPostgres():
         database="postgres"
     )
     cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT * FROM volitimes")
+    cursor.execute("SELECT DISTINCT partenza_prevista FROM volitimes")
     results = cursor.fetchall()
     cursor.close()
     return jsonify(results)
