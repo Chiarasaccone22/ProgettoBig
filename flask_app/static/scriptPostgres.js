@@ -23,7 +23,7 @@ function selezionePartenza(){
           // carico menu di cassandra 
           for (var valCassandra in risultato['resultCassandra']){
             var paragraph = document.createElement("option");
-            console.log(valCassandra)
+            console.log(valCassandra[0])
             /* paragraph.textContent= risultato[i][0]
             paragraph.value = risultato[i][0]
             window.menuCassandra.appendChild(paragraph) */

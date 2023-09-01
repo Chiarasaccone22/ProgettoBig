@@ -293,16 +293,20 @@ def selectdynamocascata(compagniaid):
 
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
+    
     for voloid in appoggio[0]:
-        logging.critical(voloid[5])
-        result=selectcassandra(voloid[5])
+        logging.critical('lista di appoggio')
+        logging.critical(voloid)
+        logging.critical('sto stampando voloid 5')
+        logging.critical(str(voloid[5]))
+        result=selectcassandra(str(voloid[5]))
         output["resultCassandra"].append(result)
     
     #NB: POICHE' MONGO CHE HA GLI AEROPORTI NON HA CONNESSIONI CON LE COMPAGNIE AEREE  
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LA COMPAGNIA AEREA
     #E MANDIAMO A MONGO LO IATA CODE DEGLI AEREOPORTI DEI VOLI RISULTANTI (AEROPORTI DI DESTINAZIONE)
     for iatacode in appoggio[0]:
-        result=selectdynamo(iatacode[8])
+        result=selectmongo(iatacode[8])
         output["resultMongo"].append(result)
 
     
@@ -326,10 +330,10 @@ def selectpostgrescompagniaid(compagniaid):
     )
     cursor = connessionePostgres.cursor()
     # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT * FROM volitimes WHERE  compagniaid= %s" , (param,))
+    cursor.execute("SELECT * FROM volitimes WHERE  compagnia= %s" , (param,))
     results = cursor.fetchall()
     cursor.close()
-    return jsonify(results)
+    return results
 
 
 #########################################################################
