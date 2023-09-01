@@ -1,4 +1,3 @@
-const menuMongo = document.getElementById('menuMongo');
 
 function selezioneAeroporto(){
 
@@ -48,3 +47,8 @@ async function caricamentoMongo(){
 
 selezioneAeroporto();
 window.onload = caricamentoMongo();
+window.menuMongo = document.getElementById('menuMongo');
+window.menuCassandra = document.getElementById('menuCassandra');
+window.menuPostgres = document.getElementById('menuPostgres');
+window.menuDynamo = document.getElementById('menuDynamo');
+window.output = document.getElementById('output');

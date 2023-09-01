@@ -1,4 +1,4 @@
-const menuDynamo = document.getElementById('menuDynamo');
+
 
 function selezioneCompagnia(){
 
@@ -48,3 +48,8 @@ async function caricamentoDynamo(){
 
 selezioneCompagnia();
 window.onload = caricamentoDynamo();
+window.menuDynamo = document.getElementById('menuDynamo');
+window.menuMongo = document.getElementById('menuMongo');
+window.menuCassandra = document.getElementById('menuCassandra');
+window.menuPostgres = document.getElementById('menuPostgres');
+window.output = document.getElementById('output');
