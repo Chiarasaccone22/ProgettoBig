@@ -81,7 +81,7 @@ def selectpostgresvoloid(voloid):
     cursor.execute("SELECT * FROM volitimes WHERE  volo_id= %s" , (param,))
     results = cursor.fetchall()
     cursor.close()
-    return jsonify(results)
+    return results
 
 
 #########################################################################
@@ -146,7 +146,9 @@ def selectcassandracascata(idvolo):
     session = connessioneCassandra
     session.execute('USE ProgettoBig')
     # Esecuzione della query con il parametro in input
-    results = session.execute('SELECT volo_id, compagnia, destinazione FROM voliInt WHERE volo_id= %s',  (param,))
+    rows= session.execute('SELECT volo_id, compagnia, destinazione FROM voliInt WHERE volo_id= %s',  (param,))
+    results =json_util.dumps(rows)
+    
     logging.critical(results)
 
     #file json di output
@@ -159,7 +161,8 @@ def selectcassandracascata(idvolo):
     logging.critical(results)
     #interrogazione a postgres con il volo_id
     for volo in results:
-            result=selectpostgresvoloid(str(volo[0]))
+            logging.critical(int(volo[1]))
+            result=selectpostgresvoloid(int(volo[1]))
             output["resultPostgres"].append(result)
 
     #interrogazione a dynamo con la compagnia aerea
@@ -188,8 +191,8 @@ def selectmongocascata(iatacode):
     tabella = dataset["aeroporto"]
     #query
     myquery = { "IATA_CODE": param }
+    
     results = tabella.find(myquery)
-    logging.critical(results)
 
     #file json di output
     output={
@@ -206,21 +209,26 @@ def selectmongocascata(iatacode):
 
     #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in results:
-            result=selectpostgresdestinazione(destinazione[0])
-            output["resultPostgres"].append(result)
-            appoggio.append(result)
+        logging.critical(destinazione['IATA_CODE'])
+        result=selectpostgresdestinazione(destinazione['IATA_CODE'])
+        logging.critical(result)
+        output["resultPostgres"].append(result)
+        appoggio.append(result)
 
     #interrogazione a cassandra con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in results:
-            result=selectcassandradestinazione(destinazione[0])
-            output["resultCassandra"].append(result)
+        result=selectcassandradestinazione(destinazione['IATA_CODE'])
+        output["resultCassandra"].append(result)
     
     #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LO IATA CODE 
     #E MANDIAMO A DYNAMO LA COMPAGNIA AEREA DEI VOLI RISULTANTI
-    for compagniaid in appoggio:
-            result=selectdynamo(compagniaid[4])
-            output["resultDynamo"].append(result)
+    
+    logging.critical(appoggio[0])
+    for compagniaid in appoggio[0]:
+        logging.critical(compagniaid[4])
+        result=selectdynamo(compagniaid[4])
+        output["resultDynamo"].append(result)
 
     
     logging.critical(output)
@@ -254,10 +262,10 @@ def selectpostgresdestinazione(destinazione):
     )
     cursor = connessionePostgres.cursor()
     # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT * FROM volitimes WHERE  destinazione= %s" , (param,))
+    cursor.execute("SELECT * FROM volitimes WHERE destinazione= %s" , (param,))
     results = cursor.fetchall()
     cursor.close()
-    return jsonify(results)
+    return results
 
 
 #########################################################################

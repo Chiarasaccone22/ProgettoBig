@@ -21,7 +21,7 @@ function selezionePartenza(){
 
           console.log(risultato['resultCassandra'])
           // carico menu di cassandra 
-          for (const valCassandra in risultato['resultCassandra']){
+          for (var valCassandra in risultato['resultCassandra']){
             var paragraph = document.createElement("option");
             console.log(valCassandra)
             /* paragraph.textContent= risultato[i][0]
@@ -32,7 +32,7 @@ function selezionePartenza(){
   
           console.log(risultato['resultMongo'])
           // carico menu di mongo 
-          for (const valMongo in risultato['resultMongo']){
+          for (var valMongo in risultato['resultMongo']){
             var paragraph = document.createElement("option");
             console.log(valMongo)
             /* paragraph.textContent= risultato[i][0]
@@ -42,7 +42,7 @@ function selezionePartenza(){
 
           console.log(risultato['resultDynamo'])
           // carico menu di cassandra 
-          for (const valDynamo in risultato['resultDynamo']){
+          for (var valDynamo in risultato['resultDynamo']){
             var paragraph = document.createElement("option");
             console.log(valDynamo)
             /* paragraph.textContent= risultato[i][0]
