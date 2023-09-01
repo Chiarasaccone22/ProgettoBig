@@ -16,9 +16,10 @@ function selezionePartenza(){
           if (output.firstChild){
             output.removeChild(output.firstChild)
           }
-          for (const j in risultato)
-
-            output.textContent+=risultato[j]+document.createElement("br")
+          for (const j in risultato){
+            output.textContent+=risultato[j]
+            output.appendChild(document.createElement("br"))
+          }
         })
         })
   });
@@ -42,8 +43,8 @@ async function caricamentoPostgres(){
           // scorro e carico il menu
           for (const i in risultato){
             var paragraph = document.createElement("option");
-            paragraph.textContent= risultato[i][9]
-            paragraph.value = risultato[i][9]
+            paragraph.textContent= risultato[i][0]
+            paragraph.value = risultato[i][0]
             menuPostgres.appendChild(paragraph)
             //menuPostgres.textContent += `Risultato dello script: ${dataArray[i]}`;
         }
