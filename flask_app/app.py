@@ -204,21 +204,31 @@ def selectmongocascata(iatacode):
     #lista di appoggio per dynamo con la selezione di postgres
     appoggio=[]
 
+    logging.critical('result di mongo...')
     logging.critical(results)
     #ora nel mio result io ho le ennuple con IATACODE (codice aereoporto), nome aeroporto ecc
 
     #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in results:
+        logging.critical('dESTINAZIONE IATACODE...')
         logging.critical(destinazione['IATA_CODE'])
         result=selectpostgresdestinazione(destinazione['IATA_CODE'])
-        logging.critical(result)
+        #interrogazine cassandra
+        risultato=selectcassandradestinazione(destinazione['IATA_CODE'])
+        #inserimento su resultpostgres
         output["resultPostgres"].append(result)
+         #inserimento su result cassandra
+        output["resultCassandra"].append(risultato)
+        logging.critical('ricerca in cassandra con iatacode....')
+        logging.critical(risultato)
         appoggio.append(result)
 
-    #interrogazione a cassandra con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
+    """ #interrogazione a cassandra con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in results:
+        logging.critical('ricerca in cassandfra con iatacode')
+        logging.critical(destinazione['IATA_CODE'])
         result=selectcassandradestinazione(destinazione['IATA_CODE'])
-        output["resultCassandra"].append(result)
+        output["resultCassandra"].append(result) """
     
     #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LO IATA CODE 
