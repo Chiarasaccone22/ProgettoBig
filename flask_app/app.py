@@ -38,8 +38,9 @@ def index():
     logging.debug('Apro le connessioni...')
     return render_template('index.html')
 
+#########################################################################
 
-#richiesta postgres
+#richiesta postgres partenza prevista
 @app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
 def selectpostgres(partenzaPrevista):
     #estrai il parametro in input con la request
@@ -61,8 +62,31 @@ def selectpostgres(partenzaPrevista):
     cursor.close()
     
     return jsonify(results)
-   
-#richiesta postgrescascata
+
+#########################################################################
+
+#METODO semplice select postgres tramite Id_volo
+def selectpostgresvoloid(voloid):
+    param = voloid
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    cursor = connessionePostgres.cursor()
+    # Esecuzione della query con il parametro in input
+    cursor.execute("SELECT * FROM volitimes WHERE  volo_id= %s" , (param,))
+    results = cursor.fetchall()
+    cursor.close()
+    return jsonify(results)
+
+
+#########################################################################
+
+#richiesta postgres cascata
 @app.route('/selectpostgrescascata/<partenzaPrevista>', methods=['GET'])
 def selectpostgrescascata(partenzaPrevista):
     #estrai il parametro in input con la request
@@ -111,6 +135,217 @@ def selectpostgrescascata(partenzaPrevista):
     logging.critical(output)
     return jsonify(output) 
    
+################################################################
+
+#richiesta cassandra cascata
+@app.route('/selectcassandracascata/<idvolo>', methods=['GET'])
+def selectcassandracascata(idvolo):
+    #estrai il parametro in input con la request
+    param = idvolo
+    #apri connessione
+    session = connessioneCassandra
+    session.execute('USE ProgettoBig')
+    # Esecuzione della query con il parametro in input
+    results = session.execute('SELECT volo_id, compagnia, destinazione FROM voliInt WHERE volo_id= %s',  (param,))
+    logging.critical(results)
+
+    #file json di output
+    output={
+        'resultPostgres': [],
+        'resultDynamo': [],
+        'resultMongo': [],
+    }
+
+    logging.critical(results)
+    #interrogazione a postgres con il volo_id
+    for volo in results:
+            result=selectpostgresvoloid(str(volo[0]))
+            output["resultPostgres"].append(result)
+
+    #interrogazione a dynamo con la compagnia aerea
+    for compagniaid in results:
+            result=selectdynamo(compagniaid[1])
+            output["resultDynamo"].append(result)
+
+    #interrogazione a mongo con l'areoporto di destinazione
+    for iatacode in results:
+            result=selectmongo(iatacode[2])
+            output["resultMongo"].append(result)
+    
+    logging.critical(output)
+    return jsonify(output) 
+   
+#######################################################################
+
+#richiesta mongo cascata
+@app.route('/selectmongocascata/<iatacode>', methods=['GET'])
+def selectmongocascata(iatacode):
+    #estrai il parametro in input con la request
+    param = iatacode
+    #apri connessione
+    mongo = connessioneMongo
+    dataset = mongo["aeroporti"]
+    tabella = dataset["aeroporto"]
+    #query
+    myquery = { "IATA_CODE": param }
+    results = tabella.find(myquery)
+    logging.critical(results)
+
+    #file json di output
+    output={
+        'resultPostgres': [],
+        'resultDynamo': [],
+        'resultCassandra': [],
+    }
+
+    #lista di appoggio per dynamo con la selezione di postgres
+    appoggio=[]
+
+    logging.critical(results)
+    #ora nel mio result io ho le ennuple con IATACODE (codice aereoporto), nome aeroporto ecc
+
+    #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
+    for destinazione in results:
+            result=selectpostgresdestinazione(destinazione[0])
+            output["resultPostgres"].append(result)
+            appoggio.append(result)
+
+    #interrogazione a cassandra con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
+    for destinazione in results:
+            result=selectcassandradestinazione(destinazione[0])
+            output["resultCassandra"].append(result)
+    
+    #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
+    #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LO IATA CODE 
+    #E MANDIAMO A DYNAMO LA COMPAGNIA AEREA DEI VOLI RISULTANTI
+    for compagniaid in appoggio:
+            result=selectdynamo(compagniaid[4])
+            output["resultDynamo"].append(result)
+
+    
+    logging.critical(output)
+    return jsonify(output) 
+
+########################################################################
+
+#METODO semplice select cassandra tramite destinazione
+def selectcassandradestinazione(destinazione):
+    #estrai il parametro in input con la request
+    param = destinazione
+    #apri connessione
+    session = connessioneCassandra
+    session.execute('USE ProgettoBig')
+    # Esecuzione della query con il parametro in input
+    rows = session.execute('SELECT * FROM voliInt WHERE destinazione= %s',  (param,))
+    return json_util.dumps(rows)
+
+#########################################################################
+
+#METODO semplice select postgres tramite destinazione
+def selectpostgresdestinazione(destinazione):
+    param = destinazione
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    cursor = connessionePostgres.cursor()
+    # Esecuzione della query con il parametro in input
+    cursor.execute("SELECT * FROM volitimes WHERE  destinazione= %s" , (param,))
+    results = cursor.fetchall()
+    cursor.close()
+    return jsonify(results)
+
+
+#########################################################################
+
+#richiesta dynamo cascata
+@app.route('/selectdynamocascata/<compagniaid>', methods=['GET'])
+def selectdynamocascata(compagniaid):
+    #connessione
+    dynamodb = connessioneDynamo
+    #parametro
+    param=compagniaid
+    table = dynamodb.Table("compagnieAeree")
+    #query
+    response = table.query(KeyConditionExpression= Key('compagnia_id').eq(param,))
+    items = response.get('Items', [])
+    logging.critical(items)
+
+    #file json di output
+    output={
+        'resultPostgres': [],
+        'resultMongo': [],
+        'resultCassandra': [],
+    }
+
+    #lista di appoggio per mongo con la selezione di postgres
+    appoggio=[]
+
+    logging.critical(items)
+    #ora nel mio result io ho le ennuple con IATACODE (codice aereoporto), nome aeroporto ecc
+
+    #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
+    for destinazione in items:
+            result=selectpostgrescompagniaid(destinazione[0])
+            output["resultPostgres"].append(result)
+            appoggio.append(result)
+
+    #interrogazione a cassandra con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
+    for destinazione in items:
+            result=selectcassandracompagniaid(destinazione[0])
+            output["resultCassandra"].append(result)
+    
+    #NB: POICHE' MONGO CHE HA GLI AEROPORTI NON HA CONNESSIONI CON LE COMPAGNIE AEREE  
+    #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LA COMPAGNIA AEREA
+    #E MANDIAMO A MONGO LO IATA CODE DEGLI AEREOPORTI DEI VOLI RISULTANTI (AEROPORTI DI DESTINAZIONE)
+    for compagniaid in appoggio:
+            result=selectdynamo(compagniaid[8])
+            output["resultMongo"].append(result)
+
+    
+    logging.critical(output)
+    return jsonify(output) 
+
+
+########################################################################
+
+#METODO semplice select cassandra tramite compagniaid
+def selectcassandracompagniaid(compagniaid):
+    #estrai il parametro in input con la request
+    param = compagniaid
+    #apri connessione
+    session = connessioneCassandra
+    session.execute('USE ProgettoBig')
+    # Esecuzione della query con il parametro in input
+    rows = session.execute('SELECT * FROM voliInt WHERE compagniaid= %s',  (param,))
+    return json_util.dumps(rows)
+
+#########################################################################
+
+#METODO semplice select postgres tramite compagniaid
+def selectpostgrescompagniaid(compagniaid):
+    param = compagniaid
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    cursor = connessionePostgres.cursor()
+    # Esecuzione della query con il parametro in input
+    cursor.execute("SELECT * FROM volitimes WHERE  compagniaid= %s" , (param,))
+    results = cursor.fetchall()
+    cursor.close()
+    return jsonify(results)
+
+
+#########################################################################
 
 #richiesta cassandra
 @app.route('/selectcassandra/<idvolo>', methods=['GET'])
@@ -279,40 +514,6 @@ def caricamentoCassandraDB():
     #return render_template('index.html', posts=rows)
 
 
-""" #richiesta postgrescascata
-@app.route('/selectpostgrescascata/<partenzaPrevista>', methods=['GET'])
-def selectpostgrescascata(partenzaPrevista):
-    #estrai il parametro in input con la request
-    #param = request.args.get('partenzaPrevista')
-    param = partenzaPrevista
-    #apri connessione
-    connessionePostgres=psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
-    #query 1 che mi seleziona i voli id con quella partenza prevista
-    cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT volo_id FROM volitimes WHERE partenza_prevista = %s" , (param,))
-    voli = cursor.fetchall()
-    cursor.close()
-
-    #query 2 che mi seleziona i voli id con quella partenza prevista
-    cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT  compagnia FROM volitimes WHERE partenza_prevista = %s" , (param,))
-    compagnie = cursor.fetchall()
-    cursor.close()
-
-    #query 1 che mi seleziona i voli id con quella partenza prevista
-    cursor = connessionePostgres.cursor()
-    cursor.execute("SELECT destinazione FROM volitimes WHERE partenza_prevista = %s" , (param,))
-    destinazioni = cursor.fetchall()
-    cursor.close()
-    
-    return jsonify(results) """
-   
 
 if __name__ == "__main__":
     #app.run(debug=True)
