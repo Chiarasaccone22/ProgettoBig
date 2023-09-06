@@ -126,3 +126,4 @@ window.menuCassandra = document.getElementById('menuCassandra');
 window.menuMongo = document.getElementById('menuMongo');
 window.menuDynamo = document.getElementById('menuDynamo');
 window.output = document.getElementById('output');
+

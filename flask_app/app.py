@@ -1,6 +1,6 @@
 from flask import Flask, render_template,jsonify,Response, redirect, url_for,  request
 from waitress import serve
-from py2neo import Graph
+from py2neo import Graph, Node, Relationship
 import psycopg2
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
@@ -28,9 +28,10 @@ connessioneCassandra=Cluster(['cassandraDb'], port=9042).connect()
 connessioneDynamo= boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:8000',region_name='us-east-1')
 
 @app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'  # '*' consente a qualsiasi dominio di accedere, ma è possibile specificare un dominio specifico
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+def add_csp_headers(response):
+    """ response.headers['Access-Control-Allow-Origin'] = '*'  # '*' consente a qualsiasi dominio di accedere, ma è possibile specificare un dominio specifico
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type' """
+    response.headers['Content-Security-Policy'] = "frame-ancestors 'self' http://localhost:7474/;"
     return response
 
 #apertura di default
@@ -38,6 +39,8 @@ def add_cors_headers(response):
 def index():
     logging.debug('Apro le connessioni...')
     return render_template('index.html')
+
+
 
 #########################################################################
 
@@ -83,6 +86,43 @@ def selectpostgresvoloid(voloid):
     results = cursor.fetchall()
     cursor.close()
     return results
+
+
+#########################################################################
+# Gestione connessione Neo4j
+#@app.route('/neo4j',methods=['GET'])
+def neo4jElaborazione(output):
+    #connessione
+    graph = connessioneNeo
+    
+    #caricamento dati output
+    """  person1 = Node("Person", name="John", age=30)
+    person2 = Node("Person", name="Alice", age=28)
+    knows = Relationship(person1, "KNOWS", person2, since=2010)
+    graph.create(person1)
+    graph.create(person2)
+    graph.create(knows) """
+
+    # metto i dati del json in un array coì mi separo dalle key
+    datiDb = []
+    for key in output:
+        datiDb.append(output[key])
+    #logging.critical(datiDb)
+
+
+    #query
+    query = "MATCH (p:Person) RETURN p"
+    result = graph.run(query)
+
+    #logging.critical(result)
+
+    valRitorno = []
+    for i in result:
+        #logging.critical(i)
+        valRitorno.append(i)
+    
+    #logging.critical(valRitorno)
+    return jsonify(valRitorno)
 
 
 #########################################################################
@@ -139,6 +179,9 @@ def selectpostgrescascata(partenzaPrevista):
             logging.critical(type(result))
             output["resultMongo"].append(result)
     
+    #PASSO DATI A NEO4J E STAMPO
+    resultN4j = neo4jElaborazione(output)
+
     logging.critical(output)
     return jsonify(output) 
    
@@ -485,8 +528,14 @@ def connNeo():
     #query
     query = "MATCH (p:Person) RETURN p"
     result = graph.run(query)
-    return jsonify(result)
-    #return render_template('index.html', posts=result)
+    logging.critical(result)
+
+    valRitorno = []
+    for i in result:
+        logging.critical(i)
+        valRitorno.append(i)
+
+    return jsonify(valRitorno)
 
 
 # Gestione connessione Cassandra
