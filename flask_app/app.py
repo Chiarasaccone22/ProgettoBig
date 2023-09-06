@@ -307,14 +307,14 @@ def selectdynamocascata(compagniaid):
         logging.critical('sto stampando voloid 5')
         logging.critical(str(voloid[5]))
         result=selectcassandra(str(voloid[5]))
-        output["resultCassandra"].append(result)
+        output["resultCassandra"].append(json.loads(result))
     
     #NB: POICHE' MONGO CHE HA GLI AEROPORTI NON HA CONNESSIONI CON LE COMPAGNIE AEREE  
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LA COMPAGNIA AEREA
     #E MANDIAMO A MONGO LO IATA CODE DEGLI AEREOPORTI DEI VOLI RISULTANTI (AEROPORTI DI DESTINAZIONE)
     for iatacode in appoggio[0]:
         result=selectmongo(iatacode[8])
-        output["resultMongo"].append(result)
+        output["resultMongo"].append(json.loads(result))
 
     
     logging.critical(output)
