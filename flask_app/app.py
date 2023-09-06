@@ -226,7 +226,7 @@ def selectmongocascata(iatacode):
     for voloid in appoggio[0]:
         logging.critical(voloid[5])
         result=selectcassandra(str(voloid[5]))
-        output["resultCassandra"].append(result)
+        output["resultCassandra"].append(json.loads(result))
     
     #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LO IATA CODE 
