@@ -20,34 +20,63 @@ function selezionePartenza(){
         postgresJson.then(risultato =>{
 
           console.log(risultato['resultCassandra'])
+          /*console.log(risultato['resultCassandra'].length)
+          console.log(risultato['resultCassandra'][0][0]) */
           // carico menu di cassandra 
-          for (var valCassandra in risultato['resultCassandra']){
+          console.log('CASSANDRA:')
+          var scorroCassandra = risultato['resultCassandra']
+          // ripuliscomenu a tendina per inserire elementi selezionati
+          while (window.menuCassandra.firstChild) {
+            window.menuCassandra.removeChild(window.menuCassandra.firstChild);
+          }
+          for (var valCassandra in scorroCassandra){
+            console.log(scorroCassandra[valCassandra][0])
+            var opt = scorroCassandra[valCassandra][0]
+
             var paragraph = document.createElement("option");
-            console.log(valCassandra[0])
-            /* paragraph.textContent= risultato[i][0]
-            paragraph.value = risultato[i][0]
-            window.menuCassandra.appendChild(paragraph) */
+            paragraph.textContent= opt[0]
+            paragraph.value = opt[0]
+            window.menuCassandra.appendChild(paragraph)
           } 
 
   
           console.log(risultato['resultMongo'])
+          /*console.log(risultato['resultMongo'].length) */
           // carico menu di mongo 
-          for (var valMongo in risultato['resultMongo']){
+          console.log('MONGO:')
+          var scorroMongo = risultato['resultMongo']
+          // ripuliscomenu a tendina per inserire elementi selezionati
+          while (window.menuMongo.firstChild) {
+            window.menuMongo.removeChild(window.menuMongo.firstChild);
+          }
+          // mentto nel menu pulito gli elementi selezionati
+          for (var valMongo in scorroMongo){
+            console.log(scorroMongo[valMongo][0])
+            var opt = scorroMongo[valMongo][0]
+
             var paragraph = document.createElement("option");
-            console.log(valMongo)
-            /* paragraph.textContent= risultato[i][0]
-            paragraph.value = risultato[i][0]
-            window.menuCassandra.appendChild(paragraph) */
+            paragraph.textContent= opt['AIRPORT']
+            paragraph.value = opt['IATA_CODE']
+            window.menuMongo.appendChild(paragraph)
           } 
 
           console.log(risultato['resultDynamo'])
-          // carico menu di cassandra 
-          for (var valDynamo in risultato['resultDynamo']){
+          /*console.log(risultato['resultDynamo'].length) */
+          // carico menu di cassandra
+          console.log('DYNAMO:')
+          var scorroDynamo = risultato['resultDynamo']
+          // ripuliscomenu a tendina per inserire elementi selezionati
+          while (window.menuDynamo.firstChild) {
+            window.menuDynamo.removeChild(window.menuDynamo.firstChild);
+          }
+          for (var valDynamo in scorroDynamo){
+            console.log(scorroDynamo[valDynamo][0])
+            var opt = scorroDynamo[valDynamo][0]
+
             var paragraph = document.createElement("option");
-            console.log(valDynamo)
-            /* paragraph.textContent= risultato[i][0]
-            paragraph.value = risultato[i][0]
-            window.menuCassandra.appendChild(paragraph) */
+            paragraph.textContent= opt['name']
+            paragraph.value = opt['compagnia_id']
+            window.menuDynamo.appendChild(paragraph)
           } 
 
           /*

@@ -11,6 +11,7 @@ import csv
 import caricamentoDy, caricamentoPos, caricamentoMongo, caricamentoCassandra
 import logging
 from bson import json_util
+import json
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
@@ -120,6 +121,9 @@ def selectpostgrescascata(partenzaPrevista):
     #interrogazione a cassandra con il volo_id
     for volo in results:
             result=selectcassandra(str(volo[0]))
+            result = json.loads(result)
+            logging.critical(result)
+            logging.critical(type(result))
             output["resultCassandra"].append(result)
 
     #interrogazione a dynamo con la compagnia aerea
@@ -130,6 +134,9 @@ def selectpostgrescascata(partenzaPrevista):
     #interrogazione a mongo con l'areoporto di destinazione
     for iatacode in results:
             result=selectmongo(iatacode[2])
+            result = json.loads(result)
+            logging.critical(result)
+            logging.critical(type(result))
             output["resultMongo"].append(result)
     
     logging.critical(output)
@@ -146,10 +153,8 @@ def selectcassandracascata(idvolo):
     session = connessioneCassandra
     session.execute('USE ProgettoBig')
     # Esecuzione della query con il parametro in input
-    rows= session.execute('SELECT volo_id, compagnia, destinazione FROM voliInt WHERE volo_id= %s',  (param,))
-    results =json_util.dumps(rows)
+    rows= session.execute('SELECT volo_id, compagnia, destinazione FROM voliInt WHERE volo_id=%s',  (param,))
     
-    logging.critical(results)
 
     #file json di output
     output={
@@ -158,26 +163,28 @@ def selectcassandracascata(idvolo):
         'resultMongo': [],
     }
 
-    logging.critical(results)
+    """ logging.critical('ROWS')
+    logging.critical(rows) """
     #interrogazione a postgres con il volo_id
-    for volo in results:
-            logging.critical(int(volo[1]))
-            result=selectpostgresvoloid(int(volo[1]))
-            output["resultPostgres"].append(result)
+    #for volo in rows:
+    resultPostgres=selectpostgresvoloid(idvolo)
+    logging.critical(resultPostgres)
+    output["resultPostgres"].append(resultPostgres)
 
-    #interrogazione a dynamo con la compagnia aerea
-    for compagniaid in results:
-            result=selectdynamo(compagniaid[1])
-            output["resultDynamo"].append(result)
+    #interrogazione a mongo con (l'areoporto di destinazione, no iatacode che devo prendere in postgres)
+    for r in rows:
+        logging.critical('R.')
+        logging.critical(r)
+        resultMongo=selectmongo(r[2])
+        output["resultMongo"].append(json.loads(resultMongo))
 
-    #interrogazione a mongo con l'areoporto di destinazione
-    for iatacode in results:
-            result=selectmongo(iatacode[2])
-            output["resultMongo"].append(result)
+        resultDynamo=selectdynamo(r[1])
+        output["resultDynamo"].append(resultDynamo)
+
     
     logging.critical(output)
     return jsonify(output) 
-   
+    
 #######################################################################
 
 #richiesta mongo cascata
