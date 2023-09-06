@@ -46,6 +46,7 @@ function selezioneAeroporto(){
             console.log(scorroDynamo[valDynamo][0])
             var opt = scorroDynamo[valDynamo][0]
 
+            
             var paragraph = document.createElement("option");
             paragraph.textContent= opt['name']
             paragraph.value = opt['compagnia_id']
