@@ -19,6 +19,7 @@ function selezionePartenza(){
         var postgresJson= response.json()
         postgresJson.then(risultato =>{
 
+          // ############################################## CASSANDRA ##############################
           console.log(risultato['resultCassandra'])
           /*console.log(risultato['resultCassandra'].length)
           console.log(risultato['resultCassandra'][0][0]) */
@@ -39,7 +40,7 @@ function selezionePartenza(){
             window.menuCassandra.appendChild(paragraph)
           } 
 
-  
+          // ####################################### MONGO ######################################### 
           console.log(risultato['resultMongo'])
           /*console.log(risultato['resultMongo'].length) */
           // carico menu di mongo 
@@ -60,6 +61,7 @@ function selezionePartenza(){
             window.menuMongo.appendChild(paragraph)
           } 
 
+          // ########################################### DYNAMO ##################################
           console.log(risultato['resultDynamo'])
           /*console.log(risultato['resultDynamo'].length) */
           // carico menu di cassandra
@@ -78,7 +80,6 @@ function selezionePartenza(){
             paragraph.value = opt['compagnia_id']
             window.menuDynamo.appendChild(paragraph)
           } 
-
           /*
           if (output.firstChild){
             output.removeChild(output.firstChild)
