@@ -11,76 +11,84 @@
 
   </head>
   <body>
-        
+    <!-- <button onclick="apriImmagineTattica()">Legenda</button>
 
-    <button id="myButton">Clicca per Eseguire lo Script</button>
-    
+    <script>
+        function apriImmagineTattica() {
+            window.open('fly.png', '_blank');
+        }
+    </script> -->
+    <button onclick="apriImmagineTattica()">Apri Immagine Tattica</button>
 
-    <fieldset>
-      <legend>Postgres: Partenza prevista</legend>
-      <select id="menuPostgres">
-<!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
- -->      
-      </select>
-    </fieldset>
+    <!-- Finestra modale -->
+    <div id="myModal" class="modal">
+        <img src="../fly.png" alt="Immagine Tattica" class="modal-content">
+    </div>
 
-    <fieldset>
-      <legend>Mongo: Aeroporti</legend>
-      <select  id="menuMongo">
-<!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
- --> 
-     </select>
-    </fieldset>
+    <script>
+        function apriImmagineLocale() {
+            var modal = document.getElementById("myModal");
+            var localImage = document.getElementById("localImage");
+            
+            // Imposta il percorso dell'immagine locale
+            localImage.src = "/home/matteo/.jpg";
 
-    <fieldset>
-      <legend>Dynamo: Compagnie</legend>
-      <select  id="menuDynamo">
-<!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
- --> 
-     </select>
-    </fieldset>
+            modal.style.display = "block";
+        }
 
-     </select>
-    </fieldset>
+        // Chiudi la finestra modale cliccando fuori da essa
+        window.onclick = function(event) {
+            var modal = document.getElementById("myModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 
-    <fieldset>
-      <legend>Cassandra: Id Volo</legend>
-      <select id="menuCassandra">
-<!--         <option value="http://www.html.it" selected="selected">www.html.it </option>
- --> 
-     </select>
-    </fieldset>
+    <div class="external" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+      <div class="internal" >
+        <fieldset>
+          <legend> <b>Postgres:</b> Partenza prevista</legend>
+          <select id="menuPostgres">    
+          </select>
+        </fieldset>
+      </div>
+
+      <div class="internal" >
+        <fieldset>
+          <legend> <b>Mongo:</b> Aeroporti</legend>
+          <select  id="menuMongo">
+        </select>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="external" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+      <div class="internal" >
+        <fieldset>
+          <legend> <b>Dynamo:</b> Compagnie</legend>
+          <select  id="menuDynamo">
+        </select>
+        </fieldset>
+      </div>
+
+      <div class="internal" >
+        <fieldset>
+          <legend> <b>Cassandra:</b> Id Volo</legend>
+          <select id="menuCassandra">
+        </select>
+        </fieldset>
+      </div>
+    </div>
 
     <div id="output"></div>
 
+    <div>
+      <iframe src="http://neodash.graphapp.io/" style="width: 100%;height: 500px"></iframe>
+    </div>
     <script src="../static/scriptCassandra.js" type="module" ></script>
     <script src="../static/scriptPostgres.js" type="module" ></script>
-    
     <script src="../static/scriptMongo.js" type="module" ></script>
     <script src="../static/scriptDynamo.js" type="module" ></script>
-
-    <iframe src="http://neodash.graphapp.io/" width="700" height="700"></iframe>
-    
-    <!-- <script type="text/javascript">
-      const response = fetch("http://localhost:7474/browser", { method: 'GET', headers: { 'Accept': 'application/json',mode: "no-cors",},
-      }).then(response => console.log(response))
-    </script> -->
-
-
-
-<!--     <script         src="{{ url_for('static', filename='scriptPostgres.js') }}"
-        type="module"
-    ></script>
-    
-    <script         src="{{ url_for('static', filename='scriptMongo.js') }}"
-        type="module"
-    ></script>
-    <script         src="{{ url_for('static', filename='scriptDynamo.js') }}"
-        type="module"
-    ></script>
-    <script         src="{{ url_for('static', filename='scriptCassandra.js') }}"
-    type="module"
-></script> -->
-
   </body>
 </html>

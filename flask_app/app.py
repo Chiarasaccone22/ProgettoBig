@@ -91,58 +91,93 @@ def selectpostgresvoloid(voloid):
 #########################################################################
 # Gestione connessione Neo4j
 #@app.route('/neo4j',methods=['GET'])
-def neo4jElaborazionePostgres(output,strMetodo):
+def neo4jElaborazione(output,strMetodo):
     #connessione
     graph = connessioneNeo
     
      #ripulisco tutto
+    logging.critical('Ripolisco tutto neo4j...')
     query = "MATCH (n) DETACH DELETE n;"
     graph.run(query)
 
-    #caricamento dati output
-    """  person1 = Node("Person", name="John", age=30)
-    person2 = Node("Person", name="Alice", age=28)
-    knows = Relationship(person1, "KNOWS", person2, since=2010)
-    graph.create(person1)
-    graph.create(person2)
-    graph.create(knows) """
 
     # metto i dati del json in un array coì mi separo dalle key
     datiDb = []
     for key in output:
         datiDb.append(output[key])
 
+    # in ognuna lista metto tutti i relativi dati perchè ci sono tanti impacchettamenti
+    # potrei anche cancellarli per il momento li lascio
     postgresDati = []
     mongoDati = []
     dynamoDati = []
     cassandraDati = []
 
+    # qui metto i nodi che creo in neo4j perchè poi mi servono per farvi le connessioni
+    nodeCList = []
+    nodeDList = []
+    nodePList = []
+    nodeDList = []
+    i = 0
+
     # Dati spacchettati in base al metodo che li manda
     if strMetodo == 'P':
-
+        
+        # prendo i dati di mongo
         for m in datiDb[0]:
             mongoDati.append(m[0])
             # creare nodi e connessioni
+            airport = m[0]['AIRPORT']
+            logging.critical('AIRPORT:')
+            logging.critical(airport)
+            nodeP = Node("AEROPORTO", name=airport)
+            graph.create(nodeP)
+            nodePList.append(nodeP)
 
+        # prendo i dati di dynamo
         for d in datiDb[1]:
             dynamoDati.append(d[0])
             # creare nodi e connessioni
+            cid = d[0]['compagnia_id']
+            logging.critical('compagnia_id:')
+            logging.critical(cid)
+            nodeD = Node("COMPAGNIA_ID", name=cid)
+            graph.create(nodeD)
+            nodeDList.append(nodeD)
 
+        # prendo i dati di cassandra
         for c in datiDb[2]:
             cassandraDati.append(c[0])
             # creare nodi e connessioni
+            uno = c[0][1]
+            logging.critical('UNO:')
+            logging.critical(uno)
+            logging.critical('i:')
+            logging.critical(i)
+            logging.critical(len(nodeDList))
+            logging.critical(len(nodePList))
+            if i< len(nodePList) and i < len(nodeDList):
+                logging.critical('Creo arco con nodo iesimo:')
+                logging.critical(i)
+                knowsC = Relationship(nodePList[i], "KNOWS", nodeDList[i], bho=uno)
+                graph.create(knowsC)
+                i+=1
 
     elif strMetodo == 'D':
         logging.critical('DATI PER NEO4J:')
         logging.critical(datiDb)
+
+        # prendo i dati di postgres
         for p in datiDb[0]:
             postgresDati.append(p[0])
             # creare nodi e connessioni
 
+        # prendo i dati di mongo 
         for m in datiDb[1]:
             mongoDati.append(m[0])
             # creare nodi e connessioni
 
+        # prendo i dati di cassandra
         for c in datiDb[2]:
             cassandraDati.append(c[0])
             # creare nodi e connessioni
@@ -150,14 +185,18 @@ def neo4jElaborazionePostgres(output,strMetodo):
     elif strMetodo == 'M':
         logging.critical('DATI PER NEO4J:')
         logging.critical(datiDb)
+
+        # prendo i dati di postgres
         for p in datiDb[0]:
             postgresDati.append(p[0])
             # creare nodi e connessioni
 
+        # prendo i dati di dynamo
         for d in datiDb[1]:
             dynamoDati.append(d[0])
             # creare nodi e connessioni
 
+        # prendo i dati di cassandra
         for c in datiDb[2]:
             cassandraDati.append(c[0])
             # creare nodi e connessioni
@@ -165,19 +204,25 @@ def neo4jElaborazionePostgres(output,strMetodo):
     elif strMetodo == 'C':
         logging.critical('DATI PER NEO4J:')
         logging.critical(datiDb)
+
+        # prendo i dati di postgres
         for p in datiDb[0]:
             postgresDati.append(p[0])
             # creare nodi e connessioni
 
+        # prendo i dati di dynamo
         for d in datiDb[1]:
             dynamoDati.append(d[0])
             # creare nodi e connessioni
 
+        # prendo i dati di mongo
         for m in datiDb[2]:
             mongoDati.append(m[0])
             # creare nodi e connessioni
 
-    logging.critical('Metodo:',strMetodo)
+
+    logging.critical('Metodo:')
+    logging.critical(strMetodo)
     logging.critical('DATI POSTGRES PER NEO4J:')
     logging.critical(postgresDati)
     logging.critical('DATI DYNAMO PER NEO4J:')
@@ -189,11 +234,13 @@ def neo4jElaborazionePostgres(output,strMetodo):
 
 
     #query inserimento per visualizzazione
-    query = "MATCH (p:Person) RETURN p"
+    # potremmo togliere non serve
+    query = "MATCH (n) OPTIONAL MATCH (n)-[r]-() RETURN n, r;"
     result = graph.run(query)
 
-    logging.critical(result)
+    #logging.critical(result)
 
+    # anche queto non serve
     valRitorno = []
     for i in result:
         #logging.critical(i)
@@ -259,7 +306,7 @@ def selectpostgrescascata(partenzaPrevista):
     
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
-    resultN4j = neo4jElaborazionePostgres(output,'P')
+    resultN4j = neo4jElaborazione(output,'P')
 
     logging.critical(output)
     return jsonify(output) 
@@ -304,7 +351,7 @@ def selectcassandracascata(idvolo):
         output["resultDynamo"].append(resultDynamo)
 
     logging.critical('Caricamento dati in neo4j...')
-    resultN4j = neo4jElaborazionePostgres(output,'C')
+    resultN4j = neo4jElaborazione(output,'C')
     
     logging.critical(output)
     return jsonify(output) 
@@ -364,7 +411,7 @@ def selectmongocascata(iatacode):
     logging.critical('Output',output)
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
-    resultN4j = neo4jElaborazionePostgres(output,'M')
+    resultN4j = neo4jElaborazione(output,'M')
     
     logging.critical(output)
     return jsonify(output) 
@@ -445,7 +492,7 @@ def selectdynamocascata(compagniaid):
 
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
-    resultN4j = neo4jElaborazionePostgres(output,'D')
+    resultN4j = neo4jElaborazione(output,'D')
     
     logging.critical(output)
     return jsonify(output) 
