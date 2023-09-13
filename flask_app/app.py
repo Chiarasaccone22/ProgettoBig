@@ -42,53 +42,7 @@ def index():
 
 
 
-#########################################################################
 
-#richiesta postgres partenza prevista
-@app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
-def selectpostgres(partenzaPrevista):
-    #estrai il parametro in input con la request
-    #param = request.args.get('partenzaPrevista')
-    param = partenzaPrevista
-    #apri connessione
-    connessionePostgres=psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
-    cursor = connessionePostgres.cursor()
-    # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT volo_id, compagnia, destinazione FROM volitimes WHERE partenza_prevista = %s" , (param,))
-    #cursor.execute("SELECT * FROM volitimes WHERE partenza_prevista = %s" , (param,))
-    results = cursor.fetchall()
-    cursor.close()
-    
-    return jsonify(results)
-
-#########################################################################
-
-#METODO semplice select postgres tramite Id_volo
-def selectpostgresvoloid(voloid):
-    param = voloid
-    #apri connessione
-    connessionePostgres=psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
-    cursor = connessionePostgres.cursor()
-    # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT * FROM volitimes WHERE  volo_id= %s" , (param,))
-    results = cursor.fetchall()
-    cursor.close()
-    return results
-
-
-#########################################################################
 # Gestione connessione Neo4j
 #@app.route('/neo4j',methods=['GET'])
 def neo4jElaborazione(output,strMetodo):
@@ -147,14 +101,43 @@ def neo4jElaborazione(output,strMetodo):
 
         # prendo i dati di cassandra
         for c in datiDb[2]:
-            cassandraDati.append(c[0])
+            cassandraDati.append(c)
             # creare nodi e connessioni
-            zero = c[0][0]
+            zero = c[0]
             logging.critical('zero:')
             logging.critical(zero)
             nodeC = Node("ID_VOLO", idvolo=zero)
             graph.create(nodeC)
             nodeCList.append(nodeC)
+
+   
+        logging.critical('creazione archi')
+        logging.critical(mongoDati)
+        logging.critical(cassandraDati)
+        logging.critical(dynamoDati)
+
+        for m in range(len(mongoDati)):
+            iatacode = mongoDati[m]['IATA_CODE']
+            logging.critical('iatacode')
+            logging.critical(iatacode)
+            for c in range(len(cassandraDati)):
+                logging.critical('c[2]')
+                logging.critical(cassandraDati[c][2])
+                logging.critical('c[1]')
+                logging.critical(cassandraDati[c][1])
+                if cassandraDati[c][2] == iatacode:
+                    logging.critical('creo arco')
+                    arco = Relationship(nodeMList[m],'aeroporto_compagnia',nodeCList[c])
+                    graph.create(arco)
+                for d in range(len(dynamoDati)):
+                    compagniaId = dynamoDati[d]['compagnia_id']
+                    logging.critical('compagnia_id')
+                    logging.critical(compagniaId)
+                    if cassandraDati[c][1] == compagniaId:
+                        logging.critical('creo arco')
+                        arco = Relationship(nodeCList[m],'compagnia_volo',nodeDList[d])
+                        graph.create(arco)
+  
             
 
     elif strMetodo == 'D':
@@ -187,9 +170,9 @@ def neo4jElaborazione(output,strMetodo):
 
         # prendo i dati di cassandra
         for c in datiDb[2]:
-            cassandraDati.append(c[0])
+            cassandraDati.append(c)
             # creare nodi e connessioni
-            zero = c[0][0]
+            zero = c[0]
             logging.critical('zero:')
             logging.critical(zero)
             nodeC = Node("ID_VOLO", idvolo=zero)
@@ -224,9 +207,9 @@ def neo4jElaborazione(output,strMetodo):
 
         # prendo i dati di cassandra
         for c in datiDb[2]:
-            cassandraDati.append(c[0])
+            cassandraDati.append(c)
             # creare nodi e connessioni
-            zero = c[0][0]
+            zero = c[0]
             logging.critical('zero:')
             logging.critical(zero)
             nodeC = Node("ID_VOLO", idvolo=zero)
@@ -302,6 +285,7 @@ def neo4jElaborazione(output,strMetodo):
 
 #########################################################################
 
+
 #richiesta postgres cascata
 @app.route('/selectpostgrescascata/<partenzaPrevista>', methods=['GET'])
 def selectpostgrescascata(partenzaPrevista):
@@ -326,7 +310,7 @@ def selectpostgrescascata(partenzaPrevista):
 
     #file json di output
     output={
-        'resultMongo': [],
+        'resultMongo': [],#cursor.execute("SELECT * FROM volitimes WHERE partenza_prevista = %s" , (param,))
         'resultDynamo': [],
         'resultCassandra': [],
 
@@ -335,18 +319,22 @@ def selectpostgrescascata(partenzaPrevista):
     logging.critical(results)
     #interrogazione a cassandra con il volo_id
     for volo in results:
-            result=selectcassandra(str(volo[0]))
+            result=selectcassandra(volo[0])
             result = json.loads(result)
+            logging.critical('con 612 devono essere 2')
             logging.critical(result)
-            logging.critical(type(result))
-            if result not in output["resultCassandra"]:
+            #if result not in output["resultCassandra"]: abbiamo eliminato il DISTINCT
+            if type(result[0]) == list:
+                for l in result:
+                    output["resultCassandra"].append(l)
+            else:
                 output["resultCassandra"].append(result)
 
     #interrogazione a dynamo con la compagnia aerea
     for compagniaid in results:
             result=selectdynamo(compagniaid[1])
-            if result not in output["resultDynamo"]:
-                output["resultDynamo"].append(result)
+            #if result not in output["resultDynamo"]: abbiamo eliminato il DISTINCT
+            output["resultDynamo"].append(result)
 
     #interrogazione a mongo con l'areoporto di destinazione
     for iatacode in results:
@@ -354,8 +342,8 @@ def selectpostgrescascata(partenzaPrevista):
             result = json.loads(result)
             logging.critical(result)
             logging.critical(type(result))
-            if result not in output["resultMongo"]:
-                output["resultMongo"].append(result)
+            #if result not in output["resultMongo"]: abbiamo eliminato il DISTINCT
+            output["resultMongo"].append(result)
     
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
@@ -399,12 +387,12 @@ def selectcassandracascata(idvolo):
         logging.critical(r)
         resultMongo=selectmongo(r[2])
         daCaricare = json.loads(resultMongo)
-        if daCaricare not in output["resultMongo"]:
-            output["resultMongo"].append(daCaricare)
+        #if daCaricare not in output["resultMongo"]:  abbiamo eliminato il DISTINCT
+        output["resultMongo"].append(daCaricare)
 
         resultDynamo=selectdynamo(r[1])
-        if resultDynamo not in output["resultDynamo"]:
-            output["resultDynamo"].append(resultDynamo)
+        #if resultDynamo not in output["resultDynamo"]: abbiamo eliminato il DISTINCT
+        output["resultDynamo"].append(resultDynamo)
 
     logging.critical('Caricamento dati in neo4j...')
     resultN4j = neo4jElaborazione(output,'C')
@@ -413,7 +401,26 @@ def selectcassandracascata(idvolo):
     return jsonify(output) 
     
 #######################################################################
+#METODO semplice select postgres tramite Id_volo
+def selectpostgresvoloid(voloid):
+    param = voloid
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    cursor = connessionePostgres.cursor()
+    # Esecuzione della query con il parametro in input
+    cursor.execute("SELECT volo_id, compagnia, destinazione FROM volitimes WHERE  volo_id= %s" , (param,))
+    results = cursor.fetchall()
+    cursor.close()
+    return results
 
+
+#########################################################################
 #richiesta mongo cascata
 @app.route('/selectmongocascata/<iatacode>', methods=['GET'])
 def selectmongocascata(iatacode):
@@ -445,17 +452,21 @@ def selectmongocascata(iatacode):
     #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in results:
         result=selectpostgresdestinazione(destinazione['IATA_CODE'])
-        if result not in output["resultPostgres"]:
-            output["resultPostgres"].append(result)
-            appoggio.append(result)
+        #if result not in output["resultPostgres"]: abbiamo eliminato il DISTINCT
+        output["resultPostgres"].append(result)
+        appoggio.append(result)
     
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
     for voloid in appoggio[0]:
-        logging.critical(voloid[5])
-        result=selectcassandra(str(voloid[5]))
+        logging.critical(voloid[0]) #PRIMA ERA 5
+        result=selectcassandra(str(voloid[0])) #PRIMA ERA 5
         daCaricare = json.loads(result)
-        if daCaricare not in output["resultCassandra"]:
+        #if daCaricare not in output["resultCassandra"]: abbiamo eliminato il DISTINCT
+        if type(daCaricare[0]) == list:
+            for l in daCaricare:
+                output["resultCassandra"].append(l)
+        else:
             output["resultCassandra"].append(daCaricare)
     
     #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
@@ -463,10 +474,10 @@ def selectmongocascata(iatacode):
     #E MANDIAMO A DYNAMO LA COMPAGNIA AEREA DEI VOLI RISULTANTI
     
     for compagniaid in appoggio[0]:
-        logging.critical(compagniaid[4])
-        result=selectdynamo(compagniaid[4])
-        if result not in output["resultDynamo"]:
-            output["resultDynamo"].append(result)
+        logging.critical(compagniaid[1]) #PRIMA ERA 4
+        result=selectdynamo(compagniaid[1]) #PRIMA ERA 4
+        #if result not in output["resultDynamo"]: abbiamo eliminato il DISTINCT
+        output["resultDynamo"].append(result)
 
     logging.critical('Output',output)
     #PASSO DATI A NEO4J E STAMPO
@@ -491,7 +502,7 @@ def selectpostgresdestinazione(destinazione):
     )
     cursor = connessionePostgres.cursor()
     # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT * FROM volitimes WHERE destinazione= %s" , (param,))
+    cursor.execute("SELECT volo_id, compagnia, destinazione FROM volitimes WHERE destinazione= %s" , (param,))
     results = cursor.fetchall()
     cursor.close()
     return results
@@ -529,9 +540,9 @@ def selectdynamocascata(compagniaid):
     #interrogazione a postgres con  la compagnia aerea, mi restituirà tutti i voli che hanno come compagnia quella compagnia aerea passata in input
     for compagniaid in items:
         result=selectpostgrescompagniaid(compagniaid['compagnia_id'])
-        if result not in output["resultPostgres"]: 
-            output["resultPostgres"].append(result)
-            appoggio.append(result)
+        #if result not in output["resultPostgres"]: abbiamo eliminato il DISTINCT
+        output["resultPostgres"].append(result)
+        appoggio.append(result)
 
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
@@ -540,20 +551,24 @@ def selectdynamocascata(compagniaid):
         logging.critical('lista di appoggio')
         logging.critical(voloid)
         logging.critical('sto stampando voloid 5')
-        logging.critical(str(voloid[5]))
-        result=selectcassandra(str(voloid[5]))
+        logging.critical(str(voloid[1]))
+        result=selectcassandra(str(voloid[1]))
         daCaricare = json.loads(result)
-        if daCaricare not in output["resultCassandra"]:
+        #if daCaricare not in output["resultCassandra"]: abbiamo eliminato il DISTINCT
+        if type(daCaricare[0]) == list:
+            for l in daCaricare:
+                output["resultCassandra"].append(l)
+        else:
             output["resultCassandra"].append(daCaricare)
     
     #NB: POICHE' MONGO CHE HA GLI AEROPORTI NON HA CONNESSIONI CON LE COMPAGNIE AEREE  
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LA COMPAGNIA AEREA
     #E MANDIAMO A MONGO LO IATA CODE DEGLI AEREOPORTI DEI VOLI RISULTANTI (AEROPORTI DI DESTINAZIONE)
     for iatacode in appoggio[0]:
-        result=selectmongo(iatacode[8])
+        result=selectmongo(iatacode[2])
         daCaricare = json.loads(result)
-        if daCaricare not in output["resultMongo"]:
-            output["resultMongo"].append(daCaricare)
+        #if daCaricare not in output["resultMongo"]: abbiamo eliminato il DISTINCT
+        output["resultMongo"].append(daCaricare)
 
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
@@ -565,6 +580,30 @@ def selectdynamocascata(compagniaid):
 
 
 #########################################################################
+#richiesta postgres partenza prevista
+@app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
+def selectpostgres(partenzaPrevista):
+    #estrai il parametro in input con la request
+    #param = request.args.get('partenzaPrevista')
+    param = partenzaPrevista
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    cursor = connessionePostgres.cursor()
+    # Esecuzione della query con il parametro in input
+    cursor.execute("SELECT volo_id, compagnia, destinazione FROM volitimes WHERE partenza_prevista = %s" , (param,))
+    results = cursor.fetchall()
+    cursor.close()
+    
+    return jsonify(results)
+
+#########################################################################
+
 
 #METODO semplice select postgres tramite compagniaid
 def selectpostgrescompagniaid(compagniaid):
@@ -579,7 +618,7 @@ def selectpostgrescompagniaid(compagniaid):
     )
     cursor = connessionePostgres.cursor()
     # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT * FROM volitimes WHERE  compagnia= %s" , (param,))
+    cursor.execute("SELECT volo_id, compagnia, destinazione FROM volitimes WHERE  compagnia= %s" , (param,))
     results = cursor.fetchall()
     cursor.close()
     return results
@@ -591,13 +630,12 @@ def selectpostgrescompagniaid(compagniaid):
 @app.route('/selectcassandra/<idvolo>', methods=['GET'])
 def selectcassandra(idvolo):
     #estrai il parametro in input con la request
-    param = idvolo
+    idVolo = idvolo
     #apri connessione
     session = connessioneCassandra
     session.execute('USE ProgettoBig')
     # Esecuzione della query con il parametro in input
-    rows = session.execute('SELECT * FROM voliInt WHERE volo_id= %s',  (param,))
-    
+    rows = session.execute('SELECT * FROM voliInt WHERE volo_id= %s',  (str(idVolo),))
     return json_util.dumps(rows)
     
 #richiesta dynamo   

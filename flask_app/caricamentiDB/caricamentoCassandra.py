@@ -25,7 +25,7 @@ def caricamentodb(connessione):
 
     # session.execute('USE ProgettoBig')
     # se non c'è crea table altrimenti mantiene                                                                                                                                                                                                   
-    session.execute('CREATE TABLE IF NOT EXISTS voliInt (anno text, mese text, giorno text, giorno_settimana text, compagnia text, volo_id text, aeromobile text, origine text, destinazione text, ritardo_partenza text, transito_pista_decollo text, durata_prevista text, durata text, tempo_volo text, distanza text, transito_pista_atterraggio text, ritardo_arrivo text, deviazione text, cancellato text, motivo_cancellazione text, ritardo_malfunzionamento text, ritardo_sicurezza text, ritardo_compagnia text, ritardo_aereo text, ritardo_maltempo text, PRIMARY KEY(volo_id))')
+    session.execute('CREATE TABLE IF NOT EXISTS voliInt (anno text, mese text, giorno text, giorno_settimana text, compagnia text, volo_id text, aeromobile text, origine text, destinazione text, ritardo_partenza text, transito_pista_decollo text, durata_prevista text, durata text, tempo_volo text, distanza text, transito_pista_atterraggio text, ritardo_arrivo text, deviazione text, cancellato text, motivo_cancellazione text, ritardo_malfunzionamento text, ritardo_sicurezza text, ritardo_compagnia text, ritardo_aereo text, ritardo_maltempo text, PRIMARY KEY(volo_id, compagnia, destinazione ))')
  
     """  with open('./intervalli_1000.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)

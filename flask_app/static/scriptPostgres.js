@@ -35,8 +35,8 @@ function selezionePartenza(){
             var opt = scorroCassandra[valCassandra][0]
 
             var paragraph = document.createElement("option");
-            paragraph.textContent= opt[0]
-            paragraph.value = opt[0]
+            paragraph.textContent= opt
+            paragraph.value = opt
             window.menuCassandra.appendChild(paragraph)
           } 
 
