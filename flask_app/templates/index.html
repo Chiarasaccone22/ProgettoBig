@@ -8,42 +8,37 @@
     <title>Database WebApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
+    <link rel="stylesheet" type="text/css" href="stileCSS.css">
+  
 
   </head>
+
   <body>
-    <!-- <button onclick="apriImmagineTattica()">Legenda</button>
-
+    <button id="mostraBottone">Leggenda parametri</button>
+    
+    <img id="immagine" src="C:\Users\39331\Documents\GitHub\ProgettoBig\flask_app\img\fly.png" alt="Descrizione dell'immagine">
+    
+    <!-- Bottone per chiudere l'immagine -->
+    <button id="chiudiBottone" style="display: none;">Chiudi Immagine</button>
+    
     <script>
-        function apriImmagineTattica() {
-            window.open('fly.png', '_blank');
-        }
-    </script> -->
-    <button onclick="apriImmagineTattica()">Apri Immagine Tattica</button>
-
-    <!-- Finestra modale -->
-    <div id="myModal" class="modal">
-        <img src="../fly.png" alt="Immagine Tattica" class="modal-content">
-    </div>
-
-    <script>
-        function apriImmagineLocale() {
-            var modal = document.getElementById("myModal");
-            var localImage = document.getElementById("localImage");
-            
-            // Imposta il percorso dell'immagine locale
-            localImage.src = "/home/matteo/.jpg";
-
-            modal.style.display = "block";
-        }
-
-        // Chiudi la finestra modale cliccando fuori da essa
-        window.onclick = function(event) {
-            var modal = document.getElementById("myModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        var bottoneMostra = document.getElementById('mostraBottone');
+        var bottoneChiudi = document.getElementById('chiudiBottone');
+        var immagine = document.getElementById('immagine');
+        
+        bottoneMostra.addEventListener('click', function() {
+            immagine.style.display = 'block';
+            bottoneChiudi.style.display = 'block'; // Mostra il bottone di chiusura
+        });
+        
+        bottoneChiudi.addEventListener('click', function() {
+            immagine.style.display = 'none'; // Nascondi l'immagine
+            bottoneChiudi.style.display = 'none'; // Nascondi il bottone di chiusura
+        });
     </script>
+</body>
+
+
 
     <div class="external" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
       <div class="internal" >

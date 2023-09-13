@@ -1,0 +1,49 @@
+/* styles.css */
+body {
+ /*background-color: rgb(184, 219, 231); */
+    background-image: url('https://wallup.net/wp-content/uploads/2018/03/23/567000-sky-clouds-airplane-748x665.jpg'); /* Specifica l'URL dell'immagine di sfondo */
+    background-size: cover; /* Scala l'immagine per coprire l'intero sfondo */
+    background-repeat: no-repeat; /* Impedisce la ripetizione dell'immagine */
+    
+    #immagine {
+          display: none;
+    }
+  
+
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+#mostraBottone{
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+#mostraBottone:hover {
+    background-color: #2980b9;
+}
+
+#chiudiBottone{
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+#chiudiBottone:hover {
+    background-color: #2980b9;
+}
+
+
+h1 {
+    color: darkblue;
+}
+p {
+    font-size: 16px;
+}
