@@ -117,7 +117,7 @@ def neo4jElaborazione(output,strMetodo):
     nodeCList = []
     nodeDList = []
     nodePList = []
-    nodeDList = []
+    nodeMList = []
     i = 0
 
     # Dati spacchettati in base al metodo che li manda
@@ -130,7 +130,84 @@ def neo4jElaborazione(output,strMetodo):
             airport = m[0]['AIRPORT']
             logging.critical('AIRPORT:')
             logging.critical(airport)
-            nodeP = Node("AEROPORTO", name=airport)
+            nodeM = Node("AEROPORTO", aeroporto=airport)
+            graph.create(nodeM)
+            nodeMList.append(nodeM)
+
+        # prendo i dati di dynamo
+        for d in datiDb[1]:
+            dynamoDati.append(d[0])
+            # creare nodi e connessioni
+            cid = d[0]['compagnia_id']
+            logging.critical('compagnia_id:')
+            logging.critical(cid)
+            nodeD = Node("COMPAGNIA_ID", compagnia_id=cid)
+            graph.create(nodeD)
+            nodeDList.append(nodeD)
+
+        # prendo i dati di cassandra
+        for c in datiDb[2]:
+            cassandraDati.append(c[0])
+            # creare nodi e connessioni
+            zero = c[0][0]
+            logging.critical('zero:')
+            logging.critical(zero)
+            nodeC = Node("ID_VOLO", idvolo=zero)
+            graph.create(nodeC)
+            nodeCList.append(nodeC)
+            
+
+    elif strMetodo == 'D':
+        logging.critical('DATI PER NEO4J:')
+        logging.critical(datiDb)
+
+        # prendo i dati di postgres
+        for p in datiDb[0]:
+            postgresDati.append(p[0][9])
+            # creare nodi e connessioni
+            partenza = p[0][9]
+            logging.critical('PARTENZA:')
+            logging.critical(partenza)
+            nodeP = Node("PARTENZA_PREVISTA",partenza_prevista=partenza)
+            graph.create(nodeP)
+            nodePList.append(nodeP)
+
+
+
+        # prendo i dati di mongo 
+        for m in datiDb[1]:
+            mongoDati.append(m[0])
+            # creare nodi e connessioni
+            airport = m[0]['AIRPORT']
+            logging.critical('AIRPORT:')
+            logging.critical(airport)
+            nodeM = Node("AEROPORTO", aeroporto=airport)
+            graph.create(nodeM)
+            nodeMList.append(nodeM)
+
+        # prendo i dati di cassandra
+        for c in datiDb[2]:
+            cassandraDati.append(c[0])
+            # creare nodi e connessioni
+            zero = c[0][0]
+            logging.critical('zero:')
+            logging.critical(zero)
+            nodeC = Node("ID_VOLO", idvolo=zero)
+            graph.create(nodeC)
+            nodeCList.append(nodeC)
+
+    elif strMetodo == 'M':
+        logging.critical('DATI PER NEO4J:')
+        logging.critical(datiDb)
+
+        # prendo i dati di postgres
+        for p in datiDb[0]:
+            postgresDati.append(p[0][9])
+            # creare nodi e connessioni
+            partenza = p[0][9]
+            logging.critical('PARTENZA:')
+            logging.critical(partenza)
+            nodeP = Node("PARTENZA_PREVISTA",partenza_prevista=partenza)
             graph.create(nodeP)
             nodePList.append(nodeP)
 
@@ -141,7 +218,7 @@ def neo4jElaborazione(output,strMetodo):
             cid = d[0]['compagnia_id']
             logging.critical('compagnia_id:')
             logging.critical(cid)
-            nodeD = Node("COMPAGNIA_ID", name=cid)
+            nodeD = Node("COMPAGNIA_ID", compagnia_id=cid)
             graph.create(nodeD)
             nodeDList.append(nodeD)
 
@@ -149,57 +226,12 @@ def neo4jElaborazione(output,strMetodo):
         for c in datiDb[2]:
             cassandraDati.append(c[0])
             # creare nodi e connessioni
-            uno = c[0][1]
-            logging.critical('UNO:')
-            logging.critical(uno)
-            logging.critical('i:')
-            logging.critical(i)
-            logging.critical(len(nodeDList))
-            logging.critical(len(nodePList))
-            if i< len(nodePList) and i < len(nodeDList):
-                logging.critical('Creo arco con nodo iesimo:')
-                logging.critical(i)
-                knowsC = Relationship(nodePList[i], "KNOWS", nodeDList[i], bho=uno)
-                graph.create(knowsC)
-                i+=1
-
-    elif strMetodo == 'D':
-        logging.critical('DATI PER NEO4J:')
-        logging.critical(datiDb)
-
-        # prendo i dati di postgres
-        for p in datiDb[0]:
-            postgresDati.append(p[0])
-            # creare nodi e connessioni
-
-        # prendo i dati di mongo 
-        for m in datiDb[1]:
-            mongoDati.append(m[0])
-            # creare nodi e connessioni
-
-        # prendo i dati di cassandra
-        for c in datiDb[2]:
-            cassandraDati.append(c[0])
-            # creare nodi e connessioni
-
-    elif strMetodo == 'M':
-        logging.critical('DATI PER NEO4J:')
-        logging.critical(datiDb)
-
-        # prendo i dati di postgres
-        for p in datiDb[0]:
-            postgresDati.append(p[0])
-            # creare nodi e connessioni
-
-        # prendo i dati di dynamo
-        for d in datiDb[1]:
-            dynamoDati.append(d[0])
-            # creare nodi e connessioni
-
-        # prendo i dati di cassandra
-        for c in datiDb[2]:
-            cassandraDati.append(c[0])
-            # creare nodi e connessioni
+            zero = c[0][0]
+            logging.critical('zero:')
+            logging.critical(zero)
+            nodeC = Node("ID_VOLO", idvolo=zero)
+            graph.create(nodeC)
+            nodeCList.append(nodeC)
 
     elif strMetodo == 'C':
         logging.critical('DATI PER NEO4J:')
@@ -207,18 +239,36 @@ def neo4jElaborazione(output,strMetodo):
 
         # prendo i dati di postgres
         for p in datiDb[0]:
-            postgresDati.append(p[0])
+            postgresDati.append(p[0][9])
             # creare nodi e connessioni
+            partenza = p[0][9]
+            logging.critical('PARTENZA:')
+            logging.critical(partenza)
+            nodeP = Node("PARTENZA_PREVISTA",partenza_prevista=partenza)
+            graph.create(nodeP)
+            nodePList.append(nodeP)
 
         # prendo i dati di dynamo
         for d in datiDb[1]:
             dynamoDati.append(d[0])
             # creare nodi e connessioni
+            cid = d[0]['compagnia_id']
+            logging.critical('compagnia_id:')
+            logging.critical(cid)
+            nodeD = Node("COMPAGNIA_ID", compagnia_id=cid)
+            graph.create(nodeD)
+            nodeDList.append(nodeD)
 
         # prendo i dati di mongo
         for m in datiDb[2]:
             mongoDati.append(m[0])
             # creare nodi e connessioni
+            airport = m[0]['AIRPORT']
+            logging.critical('AIRPORT:')
+            logging.critical(airport)
+            nodeM = Node("AEROPORTO", aeroporto=airport)
+            graph.create(nodeM)
+            nodeMList.append(nodeM)
 
 
     logging.critical('Metodo:')
@@ -289,12 +339,14 @@ def selectpostgrescascata(partenzaPrevista):
             result = json.loads(result)
             logging.critical(result)
             logging.critical(type(result))
-            output["resultCassandra"].append(result)
+            if result not in output["resultCassandra"]:
+                output["resultCassandra"].append(result)
 
     #interrogazione a dynamo con la compagnia aerea
     for compagniaid in results:
             result=selectdynamo(compagniaid[1])
-            output["resultDynamo"].append(result)
+            if result not in output["resultDynamo"]:
+                output["resultDynamo"].append(result)
 
     #interrogazione a mongo con l'areoporto di destinazione
     for iatacode in results:
@@ -302,7 +354,8 @@ def selectpostgrescascata(partenzaPrevista):
             result = json.loads(result)
             logging.critical(result)
             logging.critical(type(result))
-            output["resultMongo"].append(result)
+            if result not in output["resultMongo"]:
+                output["resultMongo"].append(result)
     
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
@@ -345,10 +398,13 @@ def selectcassandracascata(idvolo):
         logging.critical('R.')
         logging.critical(r)
         resultMongo=selectmongo(r[2])
-        output["resultMongo"].append(json.loads(resultMongo))
+        daCaricare = json.loads(resultMongo)
+        if daCaricare not in output["resultMongo"]:
+            output["resultMongo"].append(daCaricare)
 
         resultDynamo=selectdynamo(r[1])
-        output["resultDynamo"].append(resultDynamo)
+        if resultDynamo not in output["resultDynamo"]:
+            output["resultDynamo"].append(resultDynamo)
 
     logging.critical('Caricamento dati in neo4j...')
     resultN4j = neo4jElaborazione(output,'C')
@@ -389,15 +445,18 @@ def selectmongocascata(iatacode):
     #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
     for destinazione in results:
         result=selectpostgresdestinazione(destinazione['IATA_CODE'])
-        output["resultPostgres"].append(result)
-        appoggio.append(result)
+        if result not in output["resultPostgres"]:
+            output["resultPostgres"].append(result)
+            appoggio.append(result)
     
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
     for voloid in appoggio[0]:
         logging.critical(voloid[5])
         result=selectcassandra(str(voloid[5]))
-        output["resultCassandra"].append(json.loads(result))
+        daCaricare = json.loads(result)
+        if daCaricare not in output["resultCassandra"]:
+            output["resultCassandra"].append(daCaricare)
     
     #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LO IATA CODE 
@@ -406,7 +465,8 @@ def selectmongocascata(iatacode):
     for compagniaid in appoggio[0]:
         logging.critical(compagniaid[4])
         result=selectdynamo(compagniaid[4])
-        output["resultDynamo"].append(result)
+        if result not in output["resultDynamo"]:
+            output["resultDynamo"].append(result)
 
     logging.critical('Output',output)
     #PASSO DATI A NEO4J E STAMPO
@@ -469,8 +529,9 @@ def selectdynamocascata(compagniaid):
     #interrogazione a postgres con  la compagnia aerea, mi restituirà tutti i voli che hanno come compagnia quella compagnia aerea passata in input
     for compagniaid in items:
         result=selectpostgrescompagniaid(compagniaid['compagnia_id'])
-        output["resultPostgres"].append(result)
-        appoggio.append(result)
+        if result not in output["resultPostgres"]: 
+            output["resultPostgres"].append(result)
+            appoggio.append(result)
 
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
@@ -481,14 +542,18 @@ def selectdynamocascata(compagniaid):
         logging.critical('sto stampando voloid 5')
         logging.critical(str(voloid[5]))
         result=selectcassandra(str(voloid[5]))
-        output["resultCassandra"].append(json.loads(result))
+        daCaricare = json.loads(result)
+        if daCaricare not in output["resultCassandra"]:
+            output["resultCassandra"].append(daCaricare)
     
     #NB: POICHE' MONGO CHE HA GLI AEROPORTI NON HA CONNESSIONI CON LE COMPAGNIE AEREE  
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LA COMPAGNIA AEREA
     #E MANDIAMO A MONGO LO IATA CODE DEGLI AEREOPORTI DEI VOLI RISULTANTI (AEROPORTI DI DESTINAZIONE)
     for iatacode in appoggio[0]:
         result=selectmongo(iatacode[8])
-        output["resultMongo"].append(json.loads(result))
+        daCaricare = json.loads(result)
+        if daCaricare not in output["resultMongo"]:
+            output["resultMongo"].append(daCaricare)
 
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
@@ -532,6 +597,7 @@ def selectcassandra(idvolo):
     session.execute('USE ProgettoBig')
     # Esecuzione della query con il parametro in input
     rows = session.execute('SELECT * FROM voliInt WHERE volo_id= %s',  (param,))
+    
     return json_util.dumps(rows)
     
 #richiesta dynamo   
@@ -546,6 +612,7 @@ def selectdynamo(compagniaid):
     response = table.query(KeyConditionExpression= Key('compagnia_id').eq(param,))
     items = response.get('Items', [])
     # items = response['Items']
+    
     return items
     #return jsonify(items)
 
@@ -562,6 +629,7 @@ def selectmongo(iatacode):
     #query
     myquery = { "IATA_CODE": param }
     result = tabella.find(myquery)
+
     return json_util.dumps(result)
 
 
