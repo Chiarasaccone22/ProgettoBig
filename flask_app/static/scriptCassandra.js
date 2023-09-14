@@ -25,8 +25,8 @@ function selezioneIdVolo(){
             var opt = scorroPostgres[valPostgres][0]
 
             var paragraph = document.createElement("option");
-            paragraph.textContent= opt[9]
-            paragraph.value = opt[9]
+            paragraph.textContent= opt[3]
+            paragraph.value = opt[3]
             window.menuPostgres.appendChild(paragraph)
           } 
 
