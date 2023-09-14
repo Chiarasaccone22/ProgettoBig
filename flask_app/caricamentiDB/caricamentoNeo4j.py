@@ -105,14 +105,27 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
 
         # prendo i dati di postgres
         for p in datiDb[0][0]:
-            postgresDati.append(p)
             # creare nodi e connessioni
             compagnia = p[1]
             logging.critical('COMPAGNIA:')
             logging.critical(compagnia)
             nodeP = Node("COMPAGNIA",compagnia=compagnia)
-            graph.create(nodeP)
-            nodePList.append(nodeP)
+
+            if nodePList ==[]:
+                graph.create(nodeP)
+                nodePList.append(nodeP)
+                postgresDati.append(p)
+            else:
+                check = False
+                for k in nodePList:
+                    if k['COMPAGNIA'] == compagnia:
+                        check = True
+                if not(check):
+                    graph.create(nodeP)
+                    nodePList.append(nodeP)
+                    postgresDati.append(p)
+                    logging.critical('TUTTE LE COMPAGNIE INSERITE:')
+                    logging.critical(nodePList)
 
         # prendo i dati di mongo 
         for m in datiDb[1]:
@@ -171,16 +184,20 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             logging.critical('AEROPORTO:')
             logging.critical(partenza)
             nodeP = Node("AEROPORTO",aeroporto=partenza)
-            if nodePList ==[]:
+
+            """ if nodePList ==[]:
                 graph.create(nodeP)
                 nodePList.append(nodeP)
                 postgresDati.append(p)
             else:
+                check = False
                 for k in nodePList:
-                    if k['aeroporto'] != partenza:
-                        graph.create(nodeP)
-                        nodePList.append(nodeP)
-                        postgresDati.append(p)
+                    if k['aeroporto'] == partenza:
+                        check = True
+                if not(check):
+                    graph.create(nodeP)
+                    nodePList.append(nodeP)
+                    postgresDati.append(p) """
 
         # prendo i dati di dynamo
         for d in datiDb[1]:
