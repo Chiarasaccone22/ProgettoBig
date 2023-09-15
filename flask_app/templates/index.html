@@ -8,15 +8,82 @@
     <title>Database WebApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
-    <link rel="stylesheet" type="text/css" href="stileCSS.css">
+    <!-- ho commentato il link che rimandava al file css-- <link rel="stylesheet" type="text/css" href="stileCSS.css">>-->
   
+    <!-- Parte Style CSS--> 
+    <style>
+
+
+    /* Regole CSS per gli oggetti di tipo class= "internal"*/
+    .internal {
+          background-color: #8da6ad;
+          color: #030183;
+          font-size: 16px;
+          /* Altri stili... */
+        }
+    
+    body {
+    /*background-color: rgb(184, 219, 231); */
+        background-image: url('https://wallup.net/wp-content/uploads/2018/03/23/567000-sky-clouds-airplane-748x665.jpg'); /* Specifica l'URL dell'immagine di sfondo */
+        background-size: cover; /* Scala l'immagine per coprire l'intero sfondo */
+        background-repeat: no-repeat; /* Impedisce la ripetizione dell'immagine */
+
+        font-family:Arial, Helvetica, sans-serif;
+
+    }
+
+    /* Regole CSS per gli oggetti di tipo id= "internal"*/
+    #immagine {
+        display: none;
+    } 
+
+    #mostraBottone{
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    #mostraBottone:hover {
+        background-color: #2980b9;
+    }
+
+    #chiudiBottone{
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    #chiudiBottone:hover {
+        background-color: #2980b9;
+    }
+
+
+    h1 {
+        color: darkblue;
+    }
+    p {
+        font-size: 16px;
+    }
+        
+        
+    
+    
+    </style>
+
+
 
   </head>
 
   <body>
     <button id="mostraBottone">Leggenda parametri</button>
     
-    <img id="immagine" src="C:\Users\39331\Documents\GitHub\ProgettoBig\flask_app\img\fly.png" alt="Descrizione dell'immagine">
+    <img id="immagine" src="https://media.istockphoto.com/id/155380716/it/foto/aereo-volare-sopra-le-nuvole-commerciale.jpg?s=2048x2048&w=is&k=20&c=qFAK1n4_rGFo6WwVp2NHjVjgAp6tAoIgciN0kYHSzqA=" alt="Descrizione dell'immagine">
     
     <!-- Bottone per chiudere l'immagine -->
     <button id="chiudiBottone" style="display: none;">Chiudi Immagine</button>
