@@ -13,15 +13,37 @@
     <!-- Parte Style CSS--> 
     <style>
 
+    .contenitore {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Allinea il contenuto in alto */
+      align-items: center; /* Centra orizzontalmente */
+      height: 100vh; /* Imposta l'altezza al 100% della viewport per centrare verticalmente */
+    }
 
-    /* Regole CSS per gli oggetti di tipo class= "internal"*/
-    .internal {
-          background-color: #8da6ad;
-          color: #030183;
-          font-size: 16px;
-          /* Altri stili... */
-        }
-    
+    .tabella {
+      display: grid;
+      grid-template-columns: 900px 900px; /* 2 colonne con larghezza uguale */
+      grid-gap: 10px; /* Spazio tra le celle */
+      width: 40%;
+      max-width: 80%;
+      margin-left: left;
+
+      /* border-collapse: separate; Assicura che i bordi esterni siano separati dai bordi interni delle celle */
+      border-spacing: 1px; /* Spazio tra i bordi esterni della tabella e i bordi delle celle */
+      border: 1px solid black; /* Bordo nero per la tabella */
+      border-radius: 10px; /* Arrotonda i bordi esterni */
+    }
+
+    .cella {
+      padding: 40px; /* Spazio interno alle celle (opzionale)*/
+      text-align: left;   /* Allinea il testo al centro delle celle (opzionale) */
+      justify-content: left; 
+      border: 1px solid black; 
+      height: 100px; /* Altezza fissa delle celle (personalizzabile) */
+}
+  
+
     body {
     /*background-color: rgb(184, 219, 231); */
         background-image: url('https://wallup.net/wp-content/uploads/2018/03/23/567000-sky-clouds-airplane-748x665.jpg'); /* Specifica l'URL dell'immagine di sfondo */
@@ -105,48 +127,49 @@
     </script>
 </body>
 
-
-
-    <div class="external" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-      <div class="internal" >
-        <fieldset>
-          <legend> <b>Postgres:</b> Partenza prevista</legend>
-          <select id="menuPostgres">    
+  <div class="contenitore">
+    <table class="tabella">
+      <tr>
+        <td class="cella">
+          <fieldset>
+            <legend> <b>Postgres:</b> Partenza prevista</legend>
+            <select id="menuPostgres">    
+            </select>
+          </fieldset>
+        </td>
+        <td class="cella">
+          <fieldset>
+            <legend> <b>Mongo:</b> Aeroporti</legend>
+            <select  id="menuMongo">
           </select>
-        </fieldset>
-      </div>
+          </fieldset>
+        </td>
+      </tr>
+      <tr>
+        <td class="cella">
+          <fieldset>
+            <legend> <b>Dynamo:</b> Compagnie</legend>
+            <select  id="menuDynamo">
+          </select>
+          </fieldset>
+        </td>
+        <td class="cella">
+          <fieldset>
+            <legend> <b>Cassandra:</b> Id Volo</legend>
+            <select id="menuCassandra">
+          </select>
+          </fieldset>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-      <div class="internal" >
-        <fieldset>
-          <legend> <b>Mongo:</b> Aeroporti</legend>
-          <select  id="menuMongo">
-        </select>
-        </fieldset>
-      </div>
-    </div>
-
-    <div class="external" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-      <div class="internal" >
-        <fieldset>
-          <legend> <b>Dynamo:</b> Compagnie</legend>
-          <select  id="menuDynamo">
-        </select>
-        </fieldset>
-      </div>
-
-      <div class="internal" >
-        <fieldset>
-          <legend> <b>Cassandra:</b> Id Volo</legend>
-          <select id="menuCassandra">
-        </select>
-        </fieldset>
-      </div>
-    </div>
+  
 
     <div id="output"></div>
 
     <div>
-      <iframe src="http://neodash.graphapp.io/" style="width: 100%;height: 500px"></iframe>
+      <iframe src="http://neodash.graphapp.io/" style="width: 100%; height: 600px; position: absolute; bottom: 0; text-align: center;"></iframe>
     </div>
     <script src="../static/scriptCassandra.js" type="module" ></script>
     <script src="../static/scriptPostgres.js" type="module" ></script>
