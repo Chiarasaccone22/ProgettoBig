@@ -43,7 +43,26 @@
       height: 100px; /* Altezza fissa delle celle (personalizzabile) */
 }
   
+.button {
+    position: absolute;
+    top: 50%;
+    background-color: #0a0a23;
+    color: #fff;
+    border: none; 
+    border-radius: 10px; 
+    padding: 15px;
+    min-height: 30px; 
+    min-width: 120px;
+  }
 
+  .button:hover {
+      background-color: #002ead;
+      transition: 0.7s;
+  }
+
+  .button:active {
+    background-color: #ffbf00;
+}
     body {
     /*background-color: rgb(184, 219, 231); */
         background-image: url('https://wallup.net/wp-content/uploads/2018/03/23/567000-sky-clouds-airplane-748x665.jpg'); /* Specifica l'URL dell'immagine di sfondo */
@@ -66,6 +85,8 @@
         padding: 8px 15px;
         border-radius: 2px;
         cursor: pointer;
+
+    
     }
 
     #mostraBottone:hover {
@@ -163,10 +184,6 @@
       </tr>
     </table>
   </div>
-
-  
-
-    <div id="output"></div>
 
     <div>
       <iframe src="http://neodash.graphapp.io/" style="width: 100%; height: 600px; position: absolute; bottom: 0; text-align: center;"></iframe>
