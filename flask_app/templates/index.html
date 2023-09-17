@@ -42,12 +42,32 @@
       border: 1px solid black; 
       height: 100px; /* Altezza fissa delle celle (personalizzabile) */
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Unisce i bordi delle celle */
+  border-radius: 10px; /* Arrotonda i bordi esterni */
+   /* overflow: hidden;Nasconde i bordi arrotondati che potrebbero fuoriuscire */
+}
+
+th, td {
+  border: 3px solid #fffefe; /* Aggiunge un bordo sottile alle celle */
+  padding: 8px; /* Spazio interno nelle celle */
+  text-align: left; /* Allinea il testo a sinistra nelle celle */
+}
+
+th {
+  background-color: #f7efef; /* Colore di sfondo delle intestazioni di colonna */
+}
+
+/*tr:nth-child(even) {
+   /*background-color: #f2f2f2; Colora le righe pari con uno sfondo grigio chiaro }*/
   
 .button {
     position: absolute;
     top: 50%;
     background-color: #0a0a23;
-    color: #fff;
+    color: #fb0f0f;
     border: none; 
     border-radius: 10px; 
     padding: 15px;
@@ -65,7 +85,7 @@
 }
     body {
     /*background-color: rgb(184, 219, 231); */
-        background-image: url('https://wallup.net/wp-content/uploads/2018/03/23/567000-sky-clouds-airplane-748x665.jpg'); /* Specifica l'URL dell'immagine di sfondo */
+        background-image: url('https://thumbs.dreamstime.com/b/un-volo-dell-aereo-passeggeri-sopra-le-nuvole-56274533.jpg'); /* Specifica l'URL dell'immagine di sfondo */
         background-size: cover; /* Scala l'immagine per coprire l'intero sfondo */
         background-repeat: no-repeat; /* Impedisce la ripetizione dell'immagine */
 
@@ -114,8 +134,7 @@
         font-size: 16px;
     }
         
-        
-    
+  
     
     </style>
 
@@ -126,7 +145,7 @@
   <body>
     <button id="mostraBottone">Leggenda parametri</button>
     
-    <img id="immagine" src="https://media.istockphoto.com/id/155380716/it/foto/aereo-volare-sopra-le-nuvole-commerciale.jpg?s=2048x2048&w=is&k=20&c=qFAK1n4_rGFo6WwVp2NHjVjgAp6tAoIgciN0kYHSzqA=" alt="Descrizione dell'immagine">
+    <img id="immagine" src="C:\Users\39331\Documents\GitHub\ProgettoBig\fly.png">
     
     <!-- Bottone per chiudere l'immagine -->
     <button id="chiudiBottone" style="display: none;">Chiudi Immagine</button>
@@ -148,45 +167,47 @@
     </script>
 </body>
 
-  <div class="contenitore">
-    <table class="tabella">
-      <tr>
-        <td class="cella">
-          <fieldset>
-            <legend> <b>Postgres:</b> Partenza prevista</legend>
-            <select id="menuPostgres">    
+  
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <fieldset>
+              <legend> <b>Postgres:</b> Partenza prevista</legend>
+              <select id="menuPostgres">    
+              </select>
+            </fieldset>
+          </td>
+          <td>
+            <fieldset>
+              <legend> <b>Mongo:</b> Aeroporti</legend>
+              <select  id="menuMongo">
             </select>
-          </fieldset>
-        </td>
-        <td class="cella">
-          <fieldset>
-            <legend> <b>Mongo:</b> Aeroporti</legend>
-            <select  id="menuMongo">
-          </select>
-          </fieldset>
-        </td>
-      </tr>
-      <tr>
-        <td class="cella">
-          <fieldset>
-            <legend> <b>Dynamo:</b> Compagnie</legend>
-            <select  id="menuDynamo">
-          </select>
-          </fieldset>
-        </td>
-        <td class="cella">
-          <fieldset>
-            <legend> <b>Cassandra:</b> Id Volo</legend>
-            <select id="menuCassandra">
-          </select>
-          </fieldset>
-        </td>
-      </tr>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <fieldset>
+              <legend> <b>Dynamo:</b> Compagnie</legend>
+              <select  id="menuDynamo">
+            </select>
+            </fieldset>
+          </td>
+          <td>
+            <fieldset>
+              <legend> <b>Cassandra:</b> Id Volo</legend>
+              <select id="menuCassandra">
+            </select>
+            </fieldset>
+          </td>
+        </tr>
+      </tbody>
     </table>
-  </div>
+
 
     <div>
-      <iframe src="http://neodash.graphapp.io/" style="width: 100%; height: 600px; position: absolute; bottom: 0; text-align: center;"></iframe>
+      <iframe src="http://neodash.graphapp.io/" style="width: 500%; height: 60px; position: absolute; bottom: 0; text-align: center;"></iframe>
     </div>
     <script src="../static/scriptCassandra.js" type="module" ></script>
     <script src="../static/scriptPostgres.js" type="module" ></script>
