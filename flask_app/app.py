@@ -1,4 +1,4 @@
-from flask import Flask, render_template,jsonify,Response, redirect, url_for,  request
+from flask import Flask, render_template,jsonify,Response, redirect, url_for, send_file, request
 from waitress import serve
 from py2neo import Graph, Node, Relationship
 import psycopg2
@@ -563,6 +563,12 @@ def caricamentoCassandraDB():
     #return render_template('index.html', posts=rows)
 
 
+@app.route('/fly.png')
+def serve_image():
+    # Specifica il percorso del file immagine
+    image_path = './fly.png'  # Sostituisci con il percorso reale del tuo file immagine
+    # Invia il file immagine al client
+    return send_file(image_path, mimetype='image/png')
 
 if __name__ == "__main__":
     #app.run(debug=True)
