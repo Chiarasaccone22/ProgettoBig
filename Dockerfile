@@ -9,7 +9,7 @@ COPY ./flask_app/app.py /app
 COPY ./flask_app/templates /app/templates
 COPY ./flask_app/static /app/static
 COPY ./flask_app/caricamentiDB /app
-COPY ./../fly.png /app
+#COPY ./../fly.png /app
 #inserimento dataset
 COPY ./flask_app/Dataset /app
 # chiara dice che serve ma bhoooo
@@ -20,6 +20,6 @@ ENV FLASK_ENV=development
 #RUN aws configure set default.region local
 #RUN aws configure set default.output json
 # espongo una porta su docker
-EXPOSE 8080
+EXPOSE 1000
 # comandi all'avvio del container per lanciare la webapp
 CMD ["python", "app.py"]

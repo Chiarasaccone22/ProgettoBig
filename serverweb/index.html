@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Bootstrapt CSS--> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Titolo pagina-->
+    <title>Database WebApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- ho commentato il link che rimandava al file css-- <link rel="stylesheet" type="text/css" href="stileCSS.css">>-->
+  
+    <!-- Parte Style CSS--> 
+    <style>
+
+      table {
+        width: 100%;
+        /* overflow: hidden;Nasconde i bordi arrotondati che potrebbero fuoriuscire */
+      } 
+
+      td {
+        border: 3px solid white; /* Aggiunge un bordo sottile alle celle */
+        padding: 8px; /* Spazio interno nelle celle */
+        border-radius: 10px;
+        text-align: left; /* Allinea il testo a sinistra nelle celle */
+        width: 40%;
+      } 
+
+      body {
+        /*background-color: rgb(184, 219, 231); */
+        background-image: url('https://thumbs.dreamstime.com/b/un-volo-dell-aereo-passeggeri-sopra-le-nuvole-56274533.jpg'); /* Specifica l'URL dell'immagine di sfondo */
+        background-size: cover; /* Scala l'immagine per coprire l'intero sfondo */
+        background-repeat: no-repeat; /* Impedisce la ripetizione dell'immagine */
+
+        font-family:Arial, Helvetica, sans-serif;
+
+      }
+
+      /* Regole CSS per gli oggetti di tipo id= "internal"*/
+      #immagine {
+        display: none;
+      } 
+
+      #mostraBottone{
+        background-color: purple;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+
+      #mostraBottone:hover {
+        background-color:violet;
+        color: white;
+      }
+
+      #chiudiBottone{
+        background-color: purple;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+
+      #chiudiBottone:hover {
+        background-color: violet;
+      }
+
+
+      h1 {
+        color: darkblue;
+      }
+      p {
+        font-size: 16px;
+      }
+          
+      legend{
+        color: white;
+      }  
+    
+    </style>
+
+
+
+  </head>
+
+  <body>
+
+    <div style="background-color: purple; width: 100%; display: flex; flex-direction: row;"> 
+      
+      <button id="mostraBottone">Leggenda parametri</button>
+    
+      <button id="chiudiBottone" style="display: none;">Chiudi Immagine</button>
+    
+    </div>
+    
+    
+    <img id="immagine" src="/fly.png">
+    
+    
+    
+    <script>
+        var bottoneMostra = document.getElementById('mostraBottone');
+        var bottoneChiudi = document.getElementById('chiudiBottone');
+        var immagine = document.getElementById('immagine');
+        
+        bottoneMostra.addEventListener('click', function() {
+            immagine.style.display = 'block';
+            bottoneChiudi.style.display = 'block'; // Mostra il bottone di chiusura
+        });
+        
+        bottoneChiudi.addEventListener('click', function() {
+            immagine.style.display = 'none'; // Nascondi l'immagine
+            bottoneChiudi.style.display = 'none'; // Nascondi il bottone di chiusura
+        });
+    </script>
+  </body>
+
+    <div>
+      <table style="border-radius: 10px\;">
+        <tbody>
+          <tr>
+            <td>
+              <fieldset>
+                <legend> <b>Postgres:</b> Partenza prevista</legend>
+                <select id="menuPostgres" class="form-select form-select-sm" aria-label=".form-select-sm example">    
+                </select>
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend> <b>Mongo:</b> Aeroporti</legend>
+                <select  id="menuMongo" class="form-select form-select-sm" aria-label=".form-select-sm example">
+              </select>
+              </fieldset>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <fieldset>
+                <legend> <b>Dynamo:</b> Compagnie</legend>
+                <select  id="menuDynamo" class="form-select form-select-sm" aria-label=".form-select-sm example">
+              </select>
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend> <b>Cassandra:</b> Id Volo</legend>
+                <select id="menuCassandra" class="form-select form-select-sm" aria-label=".form-select-sm example">
+              </select>
+              </fieldset>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div>
+      <iframe src="http://neodash.graphapp.io/" style="width: 100%; height: 65%; position: absolute; text-align: center;"></iframe>
+    </div>
+    <script src="../static/scriptCassandra.js" type="module" ></script>
+    <script src="../static/scriptPostgres.js" type="module" ></script>
+    <script src="../static/scriptMongo.js" type="module" ></script>
+    <script src="../static/scriptDynamo.js" type="module" ></script>
+  </body>
+</html>

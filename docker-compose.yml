@@ -84,14 +84,14 @@ services:
       - progettofinale_bigdata
 
   webappdb:
-    image: webappdb
+    image: webappdbsw
     container_name: webappdb
     environment:
       - AWS_DEFAULT_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=accessKey
       - AWS_SECRET_ACCESS_KEY=secretKey
     ports:
-      - 8080:8080
+      - 1000:1000
     networks:
       - progettofinale_bigdata
 
