@@ -3,3 +3,4 @@ flask_app/templates/indexCopia.html
 flask_app/dataset_ignore/*
 flask_app/Dataset/intervalli_finale.csv
 flask_app/Dataset/timestamp_finale.csv
+~$Presentazione.pptx
