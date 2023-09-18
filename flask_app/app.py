@@ -78,8 +78,8 @@ def selectpostgrescascata(partenzaPrevista):
     for volo in results:
             result=selectcassandra(volo)
             result = json.loads(result)
-            logging.critical('con 612 devono essere 2')
-            logging.critical(result)
+            """ logging.critical('con 612 devono essere 2')
+            logging.critical(result) """
             #if result not in output["resultCassandra"]: abbiamo eliminato il DISTINCT
             if type(result[0]) == list:
                 for l in result:
@@ -97,8 +97,8 @@ def selectpostgrescascata(partenzaPrevista):
     for iatacode in results:
             result=selectmongo(iatacode[2])
             result = json.loads(result)
-            logging.critical(result)
-            logging.critical(type(result))
+            """ logging.critical(result)
+            logging.critical(type(result)) """
             if result not in output["resultMongo"]: # il DISTINCT
                 output["resultMongo"].append(result)
     
@@ -140,8 +140,8 @@ def selectcassandracascata(idvolo):
 
     #interrogazione a mongo con (l'areoporto di destinazione, no iatacode che devo prendere in postgres)
     for r in rows:
-        logging.critical('R.')
-        logging.critical(r)
+        """ logging.critical('R.')
+        logging.critical(r) """
         resultMongo=selectmongo(r[2])
         daCaricare = json.loads(resultMongo)
         #if daCaricare not in output["resultMongo"]:  abbiamo eliminato il DISTINCT
@@ -198,11 +198,11 @@ def selectmongocascata(iatacode):
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
     for voloid in appoggio[0]:
-        logging.critical(voloid[0]) #PRIMA ERA 5
+        """ logging.critical(voloid[0]) #PRIMA ERA 5 """
         result=selectcassandra(voloid) #PRIMA ERA 5
         daCaricare = json.loads(result)
-        logging.critical('result cassandra con id di postgres')
-        logging.critical(daCaricare)
+        """ logging.critical('result cassandra con id di postgres')
+        logging.critical(daCaricare) """
         #if daCaricare not in output["resultCassandra"]: abbiamo eliminato il DISTINCT
         if daCaricare != []:
             if type(daCaricare[0]) == list:
@@ -216,7 +216,7 @@ def selectmongocascata(iatacode):
     #E MANDIAMO A DYNAMO LA COMPAGNIA AEREA DEI VOLI RISULTANTI
     
     for compagniaid in appoggio[0]:
-        logging.critical(compagniaid[1]) #PRIMA ERA 4
+        """ logging.critical(compagniaid[1]) #PRIMA ERA 4 """
         result=selectdynamo(compagniaid[1]) #PRIMA ERA 4
         if result not in output["resultDynamo"]: # il DISTINCT
             output["resultDynamo"].append(result)
@@ -269,10 +269,10 @@ def selectdynamocascata(compagniaid):
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
     
     for voloid in appoggio[0]:
-        logging.critical('lista di appoggio')
+        """ logging.critical('lista di appoggio')
         logging.critical(voloid)
         logging.critical('sto stampando voloid 5')
-        logging.critical(str(voloid[1]))
+        logging.critical(str(voloid[1])) """
         result=selectcassandra(voloid)
         daCaricare = json.loads(result)
         #if daCaricare not in output["resultCassandra"]: abbiamo eliminato il DISTINCT

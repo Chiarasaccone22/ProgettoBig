@@ -41,8 +41,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             mongoDati.append(m[0])
             # creare nodi e connessioni
             airport = m[0]['AIRPORT']
-            logging.critical('AIRPORT:')
-            logging.critical(airport)
+            """ logging.critical('AIRPORT:')
+            logging.critical(airport) """
             nodeM = Node("AEROPORTO", aeroporto=airport)
             graph.create(nodeM)
             nodeMList.append(nodeM)
@@ -52,8 +52,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             dynamoDati.append(d[0])
             # creare nodi e connessioni
             cid = d[0]['compagnia_id']
-            logging.critical('compagnia_id:')
-            logging.critical(cid)
+            """ logging.critical('compagnia_id:')
+            logging.critical(cid) """
             nodeD = Node("COMPAGNIA_ID", compagnia_id=cid)
             graph.create(nodeD)
             nodeDList.append(nodeD)
@@ -63,8 +63,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             cassandraDati.append(c)
             # creare nodi e connessioni
             zero = c[0]
-            logging.critical('zero:')
-            logging.critical(zero)
+            """ logging.critical('zero:')
+            logging.critical(zero) """
             nodeC = Node("ID_VOLO", idvolo=zero)
             graph.create(nodeC)
             nodeCList.append(nodeC)
@@ -77,23 +77,23 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
 
         for m in range(len(mongoDati)):
             iatacode = mongoDati[m]['IATA_CODE']
-            logging.critical('iatacode')
-            logging.critical(iatacode)
+            """ logging.critical('iatacode')
+            logging.critical(iatacode) """
             for c in range(len(cassandraDati)):
-                logging.critical('c[2]')
+                """ logging.critical('c[2]')
                 logging.critical(cassandraDati[c][2])
                 logging.critical('c[1]')
-                logging.critical(cassandraDati[c][1])
+                logging.critical(cassandraDati[c][1]) """
                 if cassandraDati[c][2] == iatacode:
-                    logging.critical('creo arco')
+                    """ logging.critical('creo arco') """
                     arco = Relationship(nodeMList[m],'volo_aeroporto',nodeCList[c])
                     graph.create(arco)
                 for d in range(len(dynamoDati)):
                     compagniaId = dynamoDati[d]['compagnia_id']
-                    logging.critical('compagnia_id')
-                    logging.critical(compagniaId)
+                    """ logging.critical('compagnia_id')
+                    logging.critical(compagniaId) """
                     if cassandraDati[c][1] == compagniaId:
-                        logging.critical('creo arco')
+                        """ logging.critical('creo arco') """
                         arco = Relationship(nodeCList[c],'compagnia_volo',nodeDList[d])
                         graph.create(arco)
   
@@ -108,8 +108,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             # creare nodi e connessioni
             postgresDati.append(p)
             val = p[1]
-            logging.critical('COMPAGNIA:')
-            logging.critical(val)
+            """ logging.critical('COMPAGNIA:')
+            logging.critical(val) """
             nodeP = Node("COMPAGNIA",comp=val)
 
             # creo solo un nodo in quanto postgres mi rappresenta la compagnia, la compagnia è univoca perchè
@@ -124,8 +124,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             #mongoDati.append(m[0])
             # creare nodi e connessioni
             airport = m[0]['IATA_CODE']
-            logging.critical('IATA_CODE:')
-            logging.critical(airport)
+            """ logging.critical('IATA_CODE:')
+            logging.critical(airport) """
             nodeM = Node("AEROPORTO", aeroporto=airport)
             
             if nodeMList ==[]:
@@ -138,14 +138,14 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                     if k['aeroporto'] == airport:
                         check = True
                         logging.critical(True)
-                    logging.critical('k[aeroporto]')
-                    logging.critical(k['aeroporto'])
+                    """ logging.critical('k[aeroporto]')
+                    logging.critical(k['aeroporto']) """
                 if not(check):
                     graph.create(nodeM)
                     nodeMList.append(nodeM)
                     mongoDati.append(m[0])
-                    logging.critical('TUTTE LE COMPAGNIE INSERITE:')
-                    logging.critical(nodeMList)
+                    """ logging.critical('TUTTE LE COMPAGNIE INSERITE:')
+                    logging.critical(nodeMList) """
 
         
 
@@ -154,8 +154,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             cassandraDati.append(c)
             # creare nodi e connessioni
             zero = c[0]
-            logging.critical('zero:')
-            logging.critical(zero)
+            """ logging.critical('zero:')
+            logging.critical(zero) """
             nodeC = Node("ID_VOLO", idvolo=zero)
             graph.create(nodeC)
             nodeCList.append(nodeC)
@@ -163,23 +163,23 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
         for p in range(len(postgresDati)):
             iatacodeP = postgresDati[p][2]
             idvolo = postgresDati[p][0]
-            logging.critical('iatacode')
+            """ logging.critical('iatacode')
             logging.critical(iatacodeP)
             logging.critical('idVolo')
-            logging.critical(idvolo)
+            logging.critical(idvolo) """
             for c in range(len(cassandraDati)):
-                logging.critical('c[0]')
-                logging.critical(cassandraDati[c][0])
+                """ logging.critical('c[0]')
+                logging.critical(cassandraDati[c][0]) """
                 if str(cassandraDati[c][0]) == str(idvolo):
-                    logging.critical('creo arco')
+                    """ logging.critical('creo arco') """
                     arco = Relationship(nodePList[0],'compagnia_volo',nodeCList[c])
                     graph.create(arco)
             for m in range(len(mongoDati)):
                 iatacode = mongoDati[m]['IATA_CODE']
-                logging.critical('iatacode')
-                logging.critical(iatacode)
+                """ logging.critical('iatacode')
+                logging.critical(iatacode) """
                 if str(iatacode) == str(iatacodeP):
-                    logging.critical('creo arco')
+                    """ logging.critical('creo arco') """
                     arco = Relationship(nodeMList[m],'aeroporto_compagnia',nodePList[0])
                     graph.create(arco)
 
@@ -189,13 +189,13 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
 
         # prendo i dati di postgres
         for p in datiDb[0][0]:
-            logging.critical('p')
-            logging.critical(p)
+            """ logging.critical('p')
+            logging.critical(p) """
             
             # creare nodi e connessioni
             partenza = p[2]
-            logging.critical('AEROPORTO:')
-            logging.critical(partenza)
+            """ logging.critical('AEROPORTO:')
+            logging.critical(partenza) """
             nodeP = Node("AEROPORTO",aeroporto=partenza)
 
             if nodePList ==[]:
@@ -217,8 +217,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             dynamoDati.append(d[0])
             # creare nodi e connessioni
             cid = d[0]['compagnia_id']
-            logging.critical('compagnia_id:')
-            logging.critical(cid)
+            """ logging.critical('compagnia_id:')
+            logging.critical(cid) """
             nodeD = Node("COMPAGNIA_ID", compagnia_id=cid)
             graph.create(nodeD)
             nodeDList.append(nodeD)
@@ -228,8 +228,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             cassandraDati.append(c)
             # creare nodi e connessioni
             zero = c[0]
-            logging.critical('zero:')
-            logging.critical(zero)
+            """ logging.critical('zero:')
+            logging.critical(zero) """
             nodeC = Node("ID_VOLO", idvolo=zero)
             graph.create(nodeC)
             nodeCList.append(nodeC)
@@ -241,23 +241,23 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
 
         for p in range(len(postgresDati)):
             iatacode = postgresDati[p][2]
-            logging.critical('iatacode')
-            logging.critical(iatacode)
+            """ logging.critical('iatacode')
+            logging.critical(iatacode) """
             for c in range(len(cassandraDati)):
-                logging.critical('c[2]')
+                """ logging.critical('c[2]')
                 logging.critical(cassandraDati[c][2])
                 logging.critical('c[1]')
-                logging.critical(cassandraDati[c][1])
+                logging.critical(cassandraDati[c][1]) """
                 for d in range(len(dynamoDati)):
                     compagniaId = dynamoDati[d]['compagnia_id']
-                    logging.critical('compagnia_id')
-                    logging.critical(compagniaId)
+                    """ logging.critical('compagnia_id')
+                    logging.critical(compagniaId) """
                     if cassandraDati[c][1] == compagniaId:
-                        logging.critical('creo arco')
+                        """ logging.critical('creo arco') """
                         arco = Relationship(nodeDList[d],'compagnia_volo',nodeCList[c])
                         graph.create(arco)
                     if cassandraDati[c][2] == iatacode:
-                        logging.critical('creo arco')
+                        """ logging.critical('creo arco') """
                         arco = Relationship(nodePList[p],'aeroporto_compagnia',nodeDList[d])
                         graph.create(arco)
 
@@ -270,8 +270,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             postgresDati.append(p)
             # creare nodi e connessioni
             voloid = p[0]
-            logging.critical('volo_id:')
-            logging.critical(voloid)
+            """ logging.critical('volo_id:')
+            logging.critical(voloid) """
             nodeP = Node("VOLO_ID",voloid=voloid)
             graph.create(nodeP)
             nodePList.append(nodeP)
@@ -281,8 +281,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             dynamoDati.append(d[0])
             # creare nodi e connessioni
             cid = d[0]['compagnia_id']
-            logging.critical('compagnia_id:')
-            logging.critical(cid)
+            """ logging.critical('compagnia_id:')
+            logging.critical(cid) """
             nodeD = Node("COMPAGNIA_ID", compagnia_id=cid)
             graph.create(nodeD)
             nodeDList.append(nodeD)
@@ -292,8 +292,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             mongoDati.append(m[0])
             # creare nodi e connessioni
             airport = m[0]['IATA_CODE']
-            logging.critical('AIRPORT:')
-            logging.critical(airport)
+            """ logging.critical('AIRPORT:')
+            logging.critical(airport) """
             nodeM = Node("AEROPORTO", aeroporto=airport)
             graph.create(nodeM)
             nodeMList.append(nodeM)
@@ -302,22 +302,22 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
         for p in range(len(postgresDati)):
             compagnia = postgresDati[p][1]
             iatacode = postgresDati[p][2]
-            logging.critical('compagnia postgres')
+            """ logging.critical('compagnia postgres')
             logging.critical(compagnia)
             logging.critical('iatacode postgres')
-            logging.critical(iatacode)
+            logging.critical(iatacode) """
             for d in range(len(dynamoDati)):
                 compagniaD = dynamoDati[d]['compagnia_id']
-                logging.critical('compagnia dynamo')
-                logging.critical(compagniaD)
+                """ logging.critical('compagnia dynamo')
+                logging.critical(compagniaD) """
                 if compagnia == compagniaD:
-                    logging.critical('mettiamo arco')
+                    """ logging.critical('mettiamo arco') """
                     arco = Relationship(nodeDList[d],'compagnia_volo',nodePList[p])
                     graph.create(arco)
             for m in range(len(mongoDati)):
                 iatacodeM = mongoDati[m]['IATA_CODE']
-                logging.critical('iatacode mongo')
-                logging.critical(iatacodeM)
+                """ logging.critical('iatacode mongo')
+                logging.critical(iatacodeM) """
                 if iatacodeM == iatacode:
                     arco = Relationship(nodePList[p],'volo_aeroporto',nodeMList[m])
                     graph.create(arco)
