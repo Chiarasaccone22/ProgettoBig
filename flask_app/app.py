@@ -40,8 +40,8 @@ def index():
     logging.debug('Apro le connessioni...')
     return render_template('index.html')
 
-#########################################################################
 
+####################################################  METODI  PER  QUERY A CASCATA  ############################################
 
 #richiesta postgres cascata
 @app.route('/selectpostgrescascata/<partenzaPrevista>', methods=['GET'])
@@ -109,7 +109,7 @@ def selectpostgrescascata(partenzaPrevista):
     logging.critical(output)
     return jsonify(output) 
    
-################################################################
+################################################################################################
 
 #richiesta cassandra cascata
 @app.route('/selectcassandracascata/<idvolo>', methods=['GET'])
@@ -157,27 +157,9 @@ def selectcassandracascata(idvolo):
     logging.critical(output)
     return jsonify(output) 
     
-#######################################################################
-#METODO semplice select postgres tramite Id_volo
-def selectpostgresvoloid(voloid):
-    param = voloid
-    #apri connessione
-    connessionePostgres=psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
-    cursor = connessionePostgres.cursor()
-    # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT volo_id, compagnia, destinazione, partenza_prevista FROM volitimes WHERE  volo_id= %s" , (param,))
-    results = cursor.fetchall()
-    cursor.close()
-    return results
 
+#########################################################################################################
 
-#########################################################################
 #richiesta mongo cascata
 @app.route('/selectmongocascata/<iatacode>', methods=['GET'])
 def selectmongocascata(iatacode):
@@ -247,28 +229,7 @@ def selectmongocascata(iatacode):
     logging.critical(output)
     return jsonify(output) 
 
-########################################################################
-
-#METODO semplice select postgres tramite destinazione
-def selectpostgresdestinazione(destinazione):
-    param = destinazione
-    #apri connessione
-    connessionePostgres=psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
-    cursor = connessionePostgres.cursor()
-    # Esecuzione della query con il parametro in input
-    cursor.execute("SELECT volo_id, compagnia, destinazione, partenza_prevista FROM volitimes WHERE destinazione= %s" , (param,))
-    results = cursor.fetchall()
-    cursor.close()
-    return results
-
-
-#########################################################################
+############################################################################################################################
 
 #richiesta dynamo cascata
 @app.route('/selectdynamocascata/<compagniaid>', methods=['GET'])
@@ -339,7 +300,47 @@ def selectdynamocascata(compagniaid):
 
 
 
-#########################################################################
+############################ METODI QUERY SELEZIONI SINGOLE POSTGRES SU VARI PARAMETRI ##########################
+
+#METODO semplice select postgres tramite Id_volo
+def selectpostgresvoloid(voloid):
+    param = voloid
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    cursor = connessionePostgres.cursor()
+    # Esecuzione della query con il parametro in input
+    cursor.execute("SELECT volo_id, compagnia, destinazione, partenza_prevista FROM volitimes WHERE  volo_id= %s" , (param,))
+    results = cursor.fetchall()
+    cursor.close()
+    return results
+
+
+#METODO semplice select postgres tramite destinazione
+def selectpostgresdestinazione(destinazione):
+    param = destinazione
+    #apri connessione
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    cursor = connessionePostgres.cursor()
+    # Esecuzione della query con il parametro in input
+    cursor.execute("SELECT volo_id, compagnia, destinazione, partenza_prevista FROM volitimes WHERE destinazione= %s" , (param,))
+    results = cursor.fetchall()
+    cursor.close()
+    return results
+
+
+
 #richiesta postgres partenza prevista
 @app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
 def selectpostgres(partenzaPrevista):
@@ -362,8 +363,6 @@ def selectpostgres(partenzaPrevista):
     
     return jsonify(results)
 
-#########################################################################
-
 
 #METODO semplice select postgres tramite compagniaid
 def selectpostgrescompagniaid(compagniaid):
@@ -384,7 +383,9 @@ def selectpostgrescompagniaid(compagniaid):
     return results
 
 
-#########################################################################
+
+
+####################################### METODI QUERY SELEZIONI SINGOLE CASSANDRA, DYNAMO, MONGO ###################################
 
 #richiesta cassandra
 @app.route('/selectcassandra/<volo>', methods=['GET'])
@@ -433,7 +434,7 @@ def selectmongo(iatacode):
     return json_util.dumps(result)
 
 
-
+############################################# METODI TEST PER CONNESSIONE ########################################
 
 #Gestione connessione Postgres
 @app.route('/connPostgres',methods=['GET'])
@@ -453,24 +454,6 @@ def connPostgres():
     #return render_template('index.html', posts=results)
 
 
-# Gestione del caricamento dei dataset nel database Postgres
-@app.route('/caricamentoPostgres',methods=['GET'])
-def caricamentoPostgresDB():
-    connessionePostgres=psycopg2.connect(
-        host="postgresDb",
-        port="5432",
-        user="postgres",
-        password="password",
-        database="postgres"
-    )
-    #carichiamo il database con i csv in caricamentoPos e facciamo una query select
-    results=caricamentoPos.caricamentoPostgres(connessionePostgres)
-    #cursor = postgres.cursor()
-
-    return jsonify(results)
-    #return render_template('index.html', posts=results)
-
-
 # Gestione connessione Dynamo
 @app.route('/connDynamo',methods=['GET'])
 def connDynamo():
@@ -482,15 +465,6 @@ def connDynamo():
     return jsonify(response)
     #return render_template('index.html', posts=tables)
 
-
-# Gestione del caricamento dei dataset nel database Dynamo Db
-@app.route('/caricamentoDynamo',methods=['GET'])
-def caricamentoDynamoDB():
-    dynamodb=caricamentoDy.caricamentoDynamo(connessioneDynamo)
-    tabella = dynamodb.Table("compagnieAeree")
-    response = tabella.scan()
-    return jsonify(response)
-    #return render_template('index.html', posts=tables)
 
 # Gestione connessione Mongo
 @app.route('/connMongo',methods=['GET'])
@@ -509,18 +483,6 @@ def connMongo():
     
     return json_util.dumps(voli)
     #return render_template('index.html',posts=lista)
-
-
-# Gestione del caricamento dei dataset nel database Mongo
-@app.route('/caricamentoMongo',methods=['GET'])
-def caricamentoMongoDB():
-    # Carichiamo il database con i csv in caricamentoMongo e restituiamo tutti i nomi delle tabelle
-    mongo = caricamentoMongo.caricamentoMon(connessioneMongo)
-    mongo = connessioneMongo
-    lista = mongo.list_database_names()
-    return jsonify(lista)
-    #return render_template('index.html',posts=lista)
-
 
 # Gestione connessione Neo4j
 @app.route('/connNeo',methods=['GET'])
