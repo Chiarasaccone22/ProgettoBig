@@ -1,0 +1,11 @@
+0. in input ricevo output ovvero i dati elaborati dalla selezione nei database, strMetodo che mi seleziona da quale db parte la ricerca e connessioneNeo per connettermi al db di neo4j
+1. mi connetto a neo4j
+2. ripulisco il database
+3. mi dispongo il json in una lista
+5. definisco le liste dove salvo i nodi creati in neo4j per le connessioni
+4. definisco delle liste dove salvo l'informazione di ogni db relativa al proprio nodo della lista precedente
+5. seleziono il db di partenza dell'analisi (se inizio da postgres avro dati di mongo,dynamo e cassandra)
+6. scorro i dati dei 3 db e creo i nodi relativi evitando duplicati
+7. salvo tutti i nodi ed i dati per ricondurmi ai nodi
+8. creo archi di connessione sui nodi 
+9. recupero il grafo generato in neo4j
