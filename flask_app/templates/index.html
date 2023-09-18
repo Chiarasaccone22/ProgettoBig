@@ -60,6 +60,34 @@ th {
   background-color: #f7efef; /* Colore di sfondo delle intestazioni di colonna */
 }
 
+tableE {
+  width: 100%;
+  border-collapse: collapse; /* Separazione dei bordi delle celle */
+  border-spacing: 0; /* Spazio tra le celle */
+  overflow: hidden; /* Nasconde i bordi arrotondati che potrebbero fuoriuscire */
+  margin: 0 auto; /* Centra la tabella orizzontalmente */
+  border-radius: 10px; /* Arrotonda i bordi esterni della tabella */
+}
+
+thH, tdD {
+  padding: 3%; /* Spazio interno nelle celle */
+  text-align: left; /* Allinea il testo a sinistra nelle celle */
+  position: relative;
+}
+
+thH::after, td::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 3px solid #fffefe; /* Aggiunge un bordo sottile alle celle */
+  border-radius: 10px; /* Arrotonda i bordi interni delle celle */
+  z-index: 0; /* Posiziona il bordo internamente alla cella */
+}
+
+
 /*tr:nth-child(even) {
    /*background-color: #f2f2f2; Colora le righe pari con uno sfondo grigio chiaro }*/
   
@@ -207,7 +235,7 @@ th {
 
 
     <div>
-      <iframe src="http://neodash.graphapp.io/" style="width: 500%; height: 60px; position: absolute; bottom: 0; text-align: center;"></iframe>
+      <iframe src="http://neodash.graphapp.io/" style="width: 100%; height: 65%; position: absolute; bottom: 0; text-align: center;"></iframe>
     </div>
     <script src="../static/scriptCassandra.js" type="module" ></script>
     <script src="../static/scriptPostgres.js" type="module" ></script>
