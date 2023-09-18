@@ -39,7 +39,7 @@ def caricamentodb(connessione):
             session.execute(query, data) """
 
     # legge file csv
-    csv_file_path = './intervalli_1000.csv'
+    csv_file_path = './intervalli_finale.csv'
     # scorre file csv
     with open(csv_file_path, 'r') as f:
         csv_reader = csv.reader(f)
