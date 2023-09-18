@@ -91,19 +91,19 @@ thH::after, td::after {
 /*tr:nth-child(even) {
    /*background-color: #f2f2f2; Colora le righe pari con uno sfondo grigio chiaro }*/
   
-.button {
+/* .button {
     position: absolute;
     top: 50%;
-    background-color: #0a0a23;
-    color: #fb0f0f;
+    /* background-color: #0a0a23; */
+    /* color: #fb0f0f; 
     border: none; 
-    border-radius: 10px; 
+    /* border-radius: 30px;  
     padding: 15px;
-    min-height: 30px; 
-    min-width: 120px;
-  }
+    /* min-height: 30px; 
+    min-width: 120px; 
+  } */
 
-  .button:hover {
+   .button:hover {
       background-color: #002ead;
       transition: 0.7s;
   }
@@ -131,7 +131,7 @@ thH::after, td::after {
         color: white;
         border: none;
         padding: 8px 15px;
-        border-radius: 2px;
+        border-radius: 15px;
         cursor: pointer;
 
     
@@ -146,7 +146,7 @@ thH::after, td::after {
         color: white;
         border: none;
         padding: 8px 15px;
-        border-radius: 2px;
+        border-radius: 15px;
         cursor: pointer;
     }
 
@@ -202,14 +202,14 @@ thH::after, td::after {
           <td>
             <fieldset>
               <legend> <b>Postgres:</b> Partenza prevista</legend>
-              <select id="menuPostgres">    
+              <select id="menuPostgres" class="form-select form-select-sm" aria-label=".form-select-sm example">    
               </select>
             </fieldset>
           </td>
           <td>
             <fieldset>
               <legend> <b>Mongo:</b> Aeroporti</legend>
-              <select  id="menuMongo">
+              <select  id="menuMongo" class="form-select form-select-sm" aria-label=".form-select-sm example">
             </select>
             </fieldset>
           </td>
@@ -218,14 +218,14 @@ thH::after, td::after {
           <td>
             <fieldset>
               <legend> <b>Dynamo:</b> Compagnie</legend>
-              <select  id="menuDynamo">
+              <select  id="menuDynamo" class="form-select form-select-sm" aria-label=".form-select-sm example">
             </select>
             </fieldset>
           </td>
           <td>
             <fieldset>
               <legend> <b>Cassandra:</b> Id Volo</legend>
-              <select id="menuCassandra">
+              <select id="menuCassandra" class="form-select form-select-sm" aria-label=".form-select-sm example">
             </select>
             </fieldset>
           </td>
@@ -235,7 +235,7 @@ thH::after, td::after {
 
 
     <div>
-      <iframe src="http://neodash.graphapp.io/" style="width: 100%; height: 65%; position: absolute; bottom: 0; text-align: center;"></iframe>
+      <iframe src="http://neodash.graphapp.io/" style="width: 100%; height: 65.5%; position: absolute; bottom: 0; text-align: center;"></iframe>
     </div>
     <script src="../static/scriptCassandra.js" type="module" ></script>
     <script src="../static/scriptPostgres.js" type="module" ></script>
