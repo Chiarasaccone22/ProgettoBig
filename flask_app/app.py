@@ -66,12 +66,13 @@ def selectpostgrescascata(partenzaPrevista):
         database="postgres"
     )
     
+    logging.critical('Query su postgres...')
     cursor = connessionePostgres.cursor()
     # Esecuzione della query con il parametro in input
     cursor.execute("SELECT volo_id, compagnia, destinazione, partenza_prevista FROM volitimes WHERE partenza_prevista = %s" , (param,))
     results = cursor.fetchall()
-    logging.critical(results)
     cursor.close()
+    logging.critical(results)
 
     #file json di output
     output={
@@ -81,26 +82,29 @@ def selectpostgrescascata(partenzaPrevista):
 
     }
 
-    logging.critical(results)
+    logging.critical('Query su cassandra...')
     #interrogazione a cassandra con il volo_id
     for volo in results:
             result=selectcassandra(volo)
             result = json.loads(result)
-            """ logging.critical('con 612 devono essere 2')
+            """ logging.critical('RESULT DI CASSANDRA')
             logging.critical(result) """
             #if result not in output["resultCassandra"]: abbiamo eliminato il DISTINCT
-            if type(result[0]) == list:
-                for l in result:
-                    output["resultCassandra"].append(l)
-            else:
-                output["resultCassandra"].append(result)
-
+            if result != []:
+                if type(result[0]) == list:
+                    for l in result:
+                        output["resultCassandra"].append(l)
+                else:
+                    output["resultCassandra"].append(result)
+    logging.critical(output["resultCassandra"])
+    logging.critical('Query su dynamo...')
     #interrogazione a dynamo con la compagnia aerea
     for compagniaid in results:
             result=selectdynamo(compagniaid[1])
             if result not in output["resultDynamo"]: # il DISTINCT
                 output["resultDynamo"].append(result)
-
+    logging.critical(output["resultDynamo"])
+    logging.critical('Query su mongo...')
     #interrogazione a mongo con l'areoporto di destinazione
     for iatacode in results:
             result=selectmongo(iatacode[2])
@@ -109,6 +113,7 @@ def selectpostgrescascata(partenzaPrevista):
             logging.critical(type(result)) """
             if result not in output["resultMongo"]: # il DISTINCT
                 output["resultMongo"].append(result)
+    logging.critical(output["resultMongo"])
     
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')
@@ -129,8 +134,10 @@ def selectcassandracascata(idvolo):
     session = connessioneCassandra
     session.execute('USE ProgettoBig')
     # Esecuzione della query con il parametro in input
+
+    logging.critical('Query in cassandra...')
     rows= session.execute('SELECT volo_id, compagnia, destinazione FROM voliInt WHERE volo_id=%s',  (param,))
-    
+    logging.critical(rows)
 
     #file json di output
     output={
@@ -143,11 +150,13 @@ def selectcassandracascata(idvolo):
     logging.critical(rows) """
     #interrogazione a postgres con il volo_id
     #for volo in rows:
+    logging.critical('Query in postgres...')
     resultPostgres=selectpostgresvoloid(idvolo)
-    logging.critical(resultPostgres)
     output["resultPostgres"].append(resultPostgres)
+    logging.critical(output["resultPostgres"])
 
     #interrogazione a mongo con (l'areoporto di destinazione, no iatacode che devo prendere in postgres)
+    logging.critical('Query in mongo e dynamo...')
     for r in rows:
         """ logging.critical('R.')
         logging.critical(r) """
@@ -159,6 +168,8 @@ def selectcassandracascata(idvolo):
         resultDynamo=selectdynamo(r[1])
         #if resultDynamo not in output["resultDynamo"]: abbiamo eliminato il DISTINCT
         output["resultDynamo"].append(resultDynamo)
+    logging.critical(output["resultMongo"])
+    logging.critical(output["resultDynamo"])
 
     logging.critical('Caricamento dati in neo4j...')
     resultN4j = caricamentoNeo4j.neo4jElaborazione(output,'C',connessioneNeo)
