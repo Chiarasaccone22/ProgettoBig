@@ -276,7 +276,7 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             voloid = p[0]
             """ logging.critical('volo_id:')
             logging.critical(voloid) """
-            if len(postgresDati)<1:
+            if len(postgresDati)==1:
                 nodeP = Node("VOLO_ID",voloid=voloid)
                 graph.create(nodeP)
                 nodePList.append(nodeP)
@@ -310,27 +310,16 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
         logging.critical('Creo archi...')
 
         for p in range(len(postgresDati)):
-            compagnia = postgresDati[p][1]
-            iatacode = postgresDati[p][2]
             """ logging.critical('compagnia postgres')
             logging.critical(compagnia)
             logging.critical('iatacode postgres')
             logging.critical(iatacode) """
             for d in range(len(dynamoDati)):
-                compagniaD = dynamoDati[d]['compagnia_id']
-                """ logging.critical('compagnia dynamo')
-                logging.critical(compagniaD) """
-                if compagnia == compagniaD:
-                    """ logging.critical('mettiamo arco') """
-                    arco = Relationship(nodeDList[d],'compagnia_volo',nodePList[0])
-                    graph.create(arco)
+                arco = Relationship(nodeDList[d],'compagnia_volo',nodePList[0])
+                graph.create(arco)
             for m in range(len(mongoDati)):
-                iatacodeM = mongoDati[m]['IATA_CODE']
-                """ logging.critical('iatacode mongo')
-                logging.critical(iatacodeM) """
-                if iatacodeM == iatacode:
-                    arco = Relationship(nodePList[0],'volo_aeroporto',nodeMList[m])
-                    graph.create(arco)
+                arco = Relationship(nodePList[0],'volo_aeroporto',nodeMList[m])
+                graph.create(arco)
 
 
 
