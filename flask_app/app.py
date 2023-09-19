@@ -29,8 +29,8 @@ connessioneDynamo= boto3.resource('dynamodb',endpoint_url='http://dynamoDbGUI:80
 
 @app.after_request
 def add_csp_headers(response):
-    """ response.headers['Access-Control-Allow-Origin'] = '*'  # '*' consente a qualsiasi dominio di accedere, ma è possibile specificare un dominio specifico
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type' """
+    response.headers['Access-Control-Allow-Origin'] = '*'  # '*' consente a qualsiasi dominio di accedere, ma è possibile specificare un dominio specifico
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     response.headers['Content-Security-Policy'] = "frame-ancestors 'self' http://localhost:7474/;"
     return response
 
