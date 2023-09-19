@@ -193,7 +193,9 @@ def selectmongocascata(iatacode):
     #query
     myquery = { "IATA_CODE": param }
     
+    logging.critical('Query mongo...')
     results = tabella.find(myquery)
+    logging.critical(results)
 
     #file json di output
     output={
@@ -205,19 +207,20 @@ def selectmongocascata(iatacode):
     #lista di appoggio per dynamo con la selezione di postgres
     appoggio=[]
 
-    logging.critical('result di mongo...')
-    logging.critical(results)
     #ora nel mio result io ho le ennuple con IATACODE (codice aereoporto), nome aeroporto ecc
 
     #interrogazione a postgres con  lo IATACODE dell'areoporto, mi restituirà tutti i voli che hanno come destinazione quell'areoporto 
+    logging.critical('Query postgres....')
     for destinazione in results:
         result=selectpostgresdestinazione(destinazione['IATA_CODE'])
         #if result not in output["resultPostgres"]: abbiamo eliminato il DISTINCT
         output["resultPostgres"].append(result)
         appoggio.append(result)
+    logging.critical(output["resultPostgres"])
     
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
+    logging.critical('Query cassandra...')
     for voloid in appoggio[0]:
         """ logging.critical(voloid[0]) #PRIMA ERA 5 """
         result=selectcassandra(voloid) #PRIMA ERA 5
@@ -231,16 +234,19 @@ def selectmongocascata(iatacode):
                     output["resultCassandra"].append(l)
             else:
                 output["resultCassandra"].append(daCaricare)
+    logging.critical(output["resultCassandra"])
     
     #NB: POICHE' DYNAMO CHE HA LE COMPAGNIE AEREE NON HA CONNESSIONI CON GLI AEROPORTI
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LO IATA CODE 
     #E MANDIAMO A DYNAMO LA COMPAGNIA AEREA DEI VOLI RISULTANTI
     
+    logging.critical('Query dynamo...')
     for compagniaid in appoggio[0]:
         """ logging.critical(compagniaid[1]) #PRIMA ERA 4 """
         result=selectdynamo(compagniaid[1]) #PRIMA ERA 4
         if result not in output["resultDynamo"]: # il DISTINCT
             output["resultDynamo"].append(result)
+    logging.critical(output["resultDynamo"])
 
     logging.critical('Output',output)
     #PASSO DATI A NEO4J E STAMPO

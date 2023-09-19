@@ -187,9 +187,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                     graph.create(arco)
 
     elif strMetodo == 'M':
-        logging.critical('DATI PER NEO4J:')
-        logging.critical(datiDb)
 
+        logging.critical('Creo Nodi postgres...')
         # prendo i dati di postgres
         for p in datiDb[0][0]:
             """ logging.critical('p')
@@ -200,7 +199,6 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             """ logging.critical('AEROPORTO:')
             logging.critical(partenza) """
             nodeP = Node("AEROPORTO",aeroporto=partenza)
-
             if nodePList ==[]:
                 graph.create(nodeP)
                 nodePList.append(nodeP)
@@ -214,7 +212,9 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                     graph.create(nodeP)
                     nodePList.append(nodeP)
                     postgresDati.append(p)
+        logging.critical(postgresDati)
 
+        logging.critical('Creo nodi dynamo...')
         # prendo i dati di dynamo
         for d in datiDb[1]:
             dynamoDati.append(d[0])
@@ -225,7 +225,9 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             nodeD = Node("COMPAGNIA_ID", compagnia_id=cid)
             graph.create(nodeD)
             nodeDList.append(nodeD)
+        logging.critical(dynamoDati)
 
+        logging.critical('Creo nodi cassandra...')
         # prendo i dati di cassandra
         for c in datiDb[2]:
             cassandraDati.append(c)
@@ -236,11 +238,9 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             nodeC = Node("ID_VOLO", idvolo=zero)
             graph.create(nodeC)
             nodeCList.append(nodeC)
+        logging.critical(cassandraDati)
 
         logging.critical('creazione archi')
-        logging.critical(postgresDati)
-        logging.critical(cassandraDati)
-        logging.critical(dynamoDati)
 
         for p in range(len(postgresDati)):
             iatacode = postgresDati[p][2]
@@ -281,8 +281,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                 graph.create(nodeP)
                 nodePList.append(nodeP)
         logging.critical(postgresDati)
+
         logging.critical('Creo nodi dynamo...')
-        
         # prendo i dati di dynamo
         for d in datiDb[1]:
             dynamoDati.append(d[0])
@@ -294,17 +294,19 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             graph.create(nodeD)
             nodeDList.append(nodeD)
         logging.critical(dynamoDati)
+
         logging.critical('Creo nodi mongo...')
         # prendo i dati di mongo
         for m in datiDb[2]:
-            mongoDati.append(m[0])
-            # creare nodi e connessioni
-            airport = m[0]['IATA_CODE']
-            """ logging.critical('AIRPORT:')
-            logging.critical(airport) """
-            nodeM = Node("AEROPORTO", aeroporto=airport)
-            graph.create(nodeM)
-            nodeMList.append(nodeM)
+            if m[0] != []:
+                mongoDati.append(m[0])
+                # creare nodi e connessioni
+                airport = m[0]['IATA_CODE']
+                """ logging.critical('AIRPORT:')
+                logging.critical(airport) """
+                nodeM = Node("AEROPORTO", aeroporto=airport)
+                graph.create(nodeM)
+                nodeMList.append(nodeM)
         logging.critical(mongoDati)
 
         logging.critical('Creo archi...')
