@@ -1,4 +1,5 @@
 from flask import Flask, render_template,jsonify,Response, redirect, url_for, send_file, request
+#from flask_cors import CORS
 from waitress import serve
 from py2neo import Graph, Node, Relationship
 import psycopg2
@@ -12,8 +13,13 @@ import caricamentoDy, caricamentoPos, caricamentoMongo, caricamentoCassandra, ca
 import logging
 from bson import json_util
 import json
+#from flask import CORS, cross_origin
 
 app = Flask(__name__)
+#CORS(app)
+#cors = CORS(app, resources={r"/foo": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 app.config['SEND_FILE_MAX_AGE_DEFAULT']=0
 logging.basicConfig(level=logging.INFO)
 
@@ -36,6 +42,7 @@ def add_csp_headers(response):
 
 #apertura di default
 @app.route('/')
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def index():
     logging.debug('Apro le connessioni...')
     return render_template('index.html')
@@ -45,6 +52,7 @@ def index():
 
 #richiesta postgres cascata
 @app.route('/selectpostgrescascata/<partenzaPrevista>', methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectpostgrescascata(partenzaPrevista):
     #estrai il parametro in input con la request
     #param = request.args.get('partenzaPrevista')
@@ -113,6 +121,7 @@ def selectpostgrescascata(partenzaPrevista):
 
 #richiesta cassandra cascata
 @app.route('/selectcassandracascata/<idvolo>', methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectcassandracascata(idvolo):
     #estrai il parametro in input con la request
     param = idvolo
@@ -162,6 +171,7 @@ def selectcassandracascata(idvolo):
 
 #richiesta mongo cascata
 @app.route('/selectmongocascata/<iatacode>', methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectmongocascata(iatacode):
     #estrai il parametro in input con la request
     param = iatacode
@@ -233,6 +243,7 @@ def selectmongocascata(iatacode):
 
 #richiesta dynamo cascata
 @app.route('/selectdynamocascata/<compagniaid>', methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectdynamocascata(compagniaid):
     #connessione
     dynamodb = connessioneDynamo
@@ -343,6 +354,7 @@ def selectpostgresdestinazione(destinazione):
 
 #richiesta postgres partenza prevista
 @app.route('/selectpostgres/<partenzaPrevista>', methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectpostgres(partenzaPrevista):
     #estrai il parametro in input con la request
     #param = request.args.get('partenzaPrevista')
@@ -389,6 +401,7 @@ def selectpostgrescompagniaid(compagniaid):
 
 #richiesta cassandra
 @app.route('/selectcassandra/<volo>', methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectcassandra(volo):
     #estrai il parametro in input con la request
     idVolo = volo[0]
@@ -403,6 +416,7 @@ def selectcassandra(volo):
     
 #richiesta dynamo   
 @app.route('/selectdynamo/<compagniaid>',methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectdynamo(compagniaid):
     #connessione
     dynamodb = connessioneDynamo
@@ -420,6 +434,7 @@ def selectdynamo(compagniaid):
 
 #richiesta mongo   
 @app.route('/selectmongo/<iatacode>',methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def selectmongo(iatacode):
     #parametro
     param=iatacode
@@ -438,6 +453,7 @@ def selectmongo(iatacode):
 
 #Gestione connessione Postgres
 @app.route('/connPostgres',methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def connPostgres():
     connessionePostgres=psycopg2.connect(
         host="postgresDb",
@@ -456,6 +472,7 @@ def connPostgres():
 
 # Gestione connessione Dynamo
 @app.route('/connDynamo',methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def connDynamo():
     #carichiamo il database con i csv in caricamentoPos e restituiamo tutte le tabelle
     dynamodb = connessioneDynamo
@@ -468,6 +485,7 @@ def connDynamo():
 
 # Gestione connessione Mongo
 @app.route('/connMongo',methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def connMongo():
     mongo = connessioneMongo
     lista = mongo.list_database_names()
@@ -486,6 +504,7 @@ def connMongo():
 
 # Gestione connessione Neo4j
 @app.route('/connNeo',methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def connNeo():
     #connessione
     graph = connessioneNeo
@@ -504,6 +523,7 @@ def connNeo():
 
 # Gestione connessione Cassandra
 @app.route('/connCassandra',methods=['GET'])
+#@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def connCassandra():
     session = connessioneCassandra
     session.execute('USE ProgettoBig')

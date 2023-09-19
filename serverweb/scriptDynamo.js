@@ -7,7 +7,7 @@ function selezioneCompagnia(){
     console.log(menuDynamo[menuDynamo.selectedIndex].value)
     var compagnia=menuDynamo[menuDynamo.selectedIndex].value
     // invoco metodo del backend
-    const response = fetch(`http://localhost:8080/selectdynamocascata/`+compagnia, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = fetch(`http://localhost:8080/selectdynamocascata/`+compagnia, { method: 'GET',mode: 'no-cors', headers: { 'Accept': 'application/json',},
       }).then(response => {
         var dynamoJson= response.json()
         dynamoJson.then(risultato =>{
@@ -86,7 +86,7 @@ async function caricamentoDynamo(){
 
     // carico menu a tendina 3
     // faccio richiesta http
-    const response = await fetch(`http://localhost:8080/connDynamo`, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = await fetch(`http://localhost:8080/connDynamo`, { method: 'GET', mode: 'no-cors',headers: { 'Accept': 'application/json',},
     }).then(response => {
       // traspormo risposta in json
       const dynamoJson = response.json()

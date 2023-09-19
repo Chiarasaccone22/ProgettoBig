@@ -14,7 +14,7 @@ function selezionePartenza(){
     const partenzaPrevista=menuPostgres[menuPostgres.selectedIndex].value
     console.log(partenzaPrevista)
     // invoco metodo del backend
-    const response = fetch(`http://localhost:8080/selectpostgrescascata/`+partenzaPrevista, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = fetch(`http://localhost:8080/selectpostgrescascata/`+partenzaPrevista, { method: 'GET', mode: 'no-cors',headers: { 'Accept': 'application/json',},
       }).then(response => {
         var postgresJson= response.json()
         postgresJson.then(risultato =>{
@@ -101,7 +101,7 @@ async function caricamentoPostgres(){
     // Esegui lo script al click del bottone
 
     // faccio una richiesta
-    const response = await fetch(`http://localhost:8080/connPostgres`, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = await fetch(`http://localhost:8080/connPostgres`, { method: 'GET',mode: 'no-cors', headers: { 'Accept': 'application/json',},
       }).then(response => {
         // la risposta la passo in json
         const postgresJson = response.json()

@@ -95,4 +95,13 @@ services:
     networks:
       - progettofinale_bigdata
 
+  serverweb:
+    image: serverweb
+    container_name: serverweb
+    ports:
+      - 1000:80
+    networks:
+      - progettofinale_bigdata
+
+
 

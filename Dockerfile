@@ -9,7 +9,7 @@ COPY ./flask_app/app.py /app
 COPY ./flask_app/templates /app/templates
 COPY ./flask_app/static /app/static
 COPY ./flask_app/caricamentiDB /app
-#COPY ./../fly.png /app
+COPY ./../fly.png /app
 #inserimento dataset
 COPY ./flask_app/Dataset /app
 # chiara dice che serve ma bhoooo

@@ -6,7 +6,7 @@ function selezioneAeroporto(){
     console.log(menuMongo[menuMongo.selectedIndex].value)
     var aeroporto=menuMongo[menuMongo.selectedIndex].value
     // invoco metodo del backend
-    const response = fetch(`http://localhost:8080/selectmongocascata/`+aeroporto, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = fetch(`http://localhost:8080/selectmongocascata/`+aeroporto, { method: 'GET',mode: 'no-cors', headers: { 'Accept': 'application/json',},
       }).then(response => {
         var mongoJson= response.json()
         mongoJson.then(risultato =>{
@@ -86,7 +86,7 @@ async function caricamentoMongo(){
 
     // carico menu a tendina 2
     // faccio richiesta http
-    const response = await fetch(`http://localhost:8080/connMongo`, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = await fetch(`http://localhost:8080/connMongo`, { method: 'GET',mode: 'no-cors', headers: { 'Accept': 'application/json',},
     }).then(response => {
       // risposta in json
       const mongoJson = response.json()

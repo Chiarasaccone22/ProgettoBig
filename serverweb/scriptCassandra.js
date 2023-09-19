@@ -4,7 +4,7 @@ function selezioneIdVolo(){
   menuCassandra.addEventListener("change",function(){
     console.log(menuCassandra[menuCassandra.selectedIndex].value)
     var idVolo = menuCassandra[menuCassandra.selectedIndex].value
-    const response = fetch(`http://localhost:8080/selectcassandracascata/`+idVolo, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = fetch(`http://localhost:8080/selectcassandracascata/`+idVolo, { method: 'GET',mode: 'no-cors', headers: { 'Accept': 'application/json',},
       }).then(response => {
         var cassandraJson = response.json()
         cassandraJson.then(risultato =>{
@@ -83,7 +83,7 @@ async function caricamentoCassandra(){
     // Esegui lo script al click del bottone
 
     // faccio una richiesta
-    const response = await fetch(`http://localhost:8080/connCassandra`, { method: 'GET', headers: { 'Accept': 'application/json',},
+    const response = await fetch(`http://localhost:8080/connCassandra`, { method: 'GET', mode: 'no-cors',headers: { 'Accept': 'application/json',},
       }).then(response => {
         // la risposta la passo in json
         const cassandraJson = response.json()
