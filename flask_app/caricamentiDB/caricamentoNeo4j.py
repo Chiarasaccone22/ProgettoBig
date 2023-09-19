@@ -276,11 +276,13 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             voloid = p[0]
             """ logging.critical('volo_id:')
             logging.critical(voloid) """
-            nodeP = Node("VOLO_ID",voloid=voloid)
-            graph.create(nodeP)
-            nodePList.append(nodeP)
+            if len(postgresDati)<1:
+                nodeP = Node("VOLO_ID",voloid=voloid)
+                graph.create(nodeP)
+                nodePList.append(nodeP)
         logging.critical(postgresDati)
         logging.critical('Creo nodi dynamo...')
+        
         # prendo i dati di dynamo
         for d in datiDb[1]:
             dynamoDati.append(d[0])
@@ -320,14 +322,14 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                 logging.critical(compagniaD) """
                 if compagnia == compagniaD:
                     """ logging.critical('mettiamo arco') """
-                    arco = Relationship(nodeDList[d],'compagnia_volo',nodePList[p])
+                    arco = Relationship(nodeDList[d],'compagnia_volo',nodePList[0])
                     graph.create(arco)
             for m in range(len(mongoDati)):
                 iatacodeM = mongoDati[m]['IATA_CODE']
                 """ logging.critical('iatacode mongo')
                 logging.critical(iatacodeM) """
                 if iatacodeM == iatacode:
-                    arco = Relationship(nodePList[p],'volo_aeroporto',nodeMList[m])
+                    arco = Relationship(nodePList[0],'volo_aeroporto',nodeMList[m])
                     graph.create(arco)
 
 
