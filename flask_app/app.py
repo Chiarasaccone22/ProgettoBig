@@ -268,9 +268,9 @@ def selectdynamocascata(compagniaid):
     param=compagniaid
     table = dynamodb.Table("compagnieAeree")
     #query
+    logging.critical('Query dynamo...')
     response = table.query(KeyConditionExpression= Key('compagnia_id').eq(param,))
     items = response.get('Items', [])
-    logging.critical('stampa degli items risultato della compagnia')
     logging.critical(items)
 
     #file json di output
@@ -283,19 +283,20 @@ def selectdynamocascata(compagniaid):
     #lista di appoggio per mongo con la selezione di postgres
     appoggio=[]
 
-    logging.critical(items)
     #ora nel mio result io ho le ennuple con IATACODE (codice aereoporto), nome aeroporto ecc
 
+    logging.critical('Query postgres...')
     #interrogazione a postgres con  la compagnia aerea, mi restituirà tutti i voli che hanno come compagnia quella compagnia aerea passata in input
     for compagniaid in items:
         result=selectpostgrescompagniaid(compagniaid['compagnia_id'])
         #if result not in output["resultPostgres"]: abbiamo eliminato il DISTINCT
         output["resultPostgres"].append(result)
         appoggio.append(result)
+    logging.critical(output["resultPostgres"])
 
     #NB: POICHE' IN CASSANDRA NON POSSIAMO FARE QUERY CHE NON SIA SULLA CHIAVE
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE TUTTI I VOLI_ID DEI RISULTATI E PASSARLI A CASSANDRA
-    
+    logging.critical('Query cassandra...')
     for voloid in appoggio[0]:
         """ logging.critical('lista di appoggio')
         logging.critical(voloid)
@@ -304,20 +305,24 @@ def selectdynamocascata(compagniaid):
         result=selectcassandra(voloid)
         daCaricare = json.loads(result)
         #if daCaricare not in output["resultCassandra"]: abbiamo eliminato il DISTINCT
-        if type(daCaricare[0]) == list:
-            for l in daCaricare:
-                output["resultCassandra"].append(l)
-        else:
-            output["resultCassandra"].append(daCaricare)
+        if daCaricare != []:
+            if type(daCaricare[0]) == list:
+                for l in daCaricare:
+                    output["resultCassandra"].append(l)
+            else:
+                output["resultCassandra"].append(daCaricare)
+    logging.critical(output["resultCassandra"])
     
     #NB: POICHE' MONGO CHE HA GLI AEROPORTI NON HA CONNESSIONI CON LE COMPAGNIE AEREE  
     #ALLORA DOBBIAMO PASSARE IN POSTGRES, CHIEDERE IL RISULTATO TRAMITE LA COMPAGNIA AEREA
     #E MANDIAMO A MONGO LO IATA CODE DEGLI AEREOPORTI DEI VOLI RISULTANTI (AEROPORTI DI DESTINAZIONE)
+    logging.critical('Query mongo...')
     for iatacode in appoggio[0]:
         result=selectmongo(iatacode[2])
         daCaricare = json.loads(result)
         #if daCaricare not in output["resultMongo"]: abbiamo eliminato il DISTINCT
         output["resultMongo"].append(daCaricare)
+    logging.critical(output["resultMongo"])
 
     #PASSO DATI A NEO4J E STAMPO
     logging.critical('Caricamento dati in neo4j...')

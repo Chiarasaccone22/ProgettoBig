@@ -103,9 +103,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             
 
     elif strMetodo == 'D':
-        logging.critical('DATI PER NEO4J:')
-        logging.critical(datiDb)
 
+        logging.critical('Creo nodi postgres...')
         # prendo i dati di postgres
         for p in datiDb[0][0]:
             # creare nodi e connessioni
@@ -121,7 +120,9 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                 graph.create(nodeP)
                 nodePList.append(nodeP)
                 postgresDati.append(p)
+        logging.critical(postgresDati)
 
+        logging.critical('Creo nodi mongo...')
         # prendo i dati di mongo 
         for m in datiDb[1]:
             #mongoDati.append(m[0])
@@ -140,7 +141,6 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                 for k in nodeMList:
                     if k['aeroporto'] == airport:
                         check = True
-                        logging.critical(True)
                     """ logging.critical('k[aeroporto]')
                     logging.critical(k['aeroporto']) """
                 if not(check):
@@ -149,9 +149,10 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                     mongoDati.append(m[0])
                     """ logging.critical('TUTTE LE COMPAGNIE INSERITE:')
                     logging.critical(nodeMList) """
+        logging.critical(mongoDati)
 
         
-
+        logging.critical('Creo nodi cassandra...')
         # prendo i dati di cassandra
         for c in datiDb[2]:
             cassandraDati.append(c)
@@ -162,6 +163,9 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
             nodeC = Node("ID_VOLO", idvolo=zero)
             graph.create(nodeC)
             nodeCList.append(nodeC)
+        logging.critical(cassandraDati)
+        
+        logging.critical('Creo archi ....')
 
         for p in range(len(postgresDati)):
             iatacodeP = postgresDati[p][2]
@@ -186,6 +190,7 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                     arco = Relationship(nodeMList[m],'aeroporto_compagnia',nodePList[0])
                     graph.create(arco)
 
+################################################# MONGO ########################################################
     elif strMetodo == 'M':
 
         logging.critical('Creo Nodi postgres...')
