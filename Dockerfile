@@ -20,6 +20,6 @@ ENV FLASK_ENV=development
 #RUN aws configure set default.region local
 #RUN aws configure set default.output json
 # espongo una porta su docker
-EXPOSE 1000
+EXPOSE 8080
 # comandi all'avvio del container per lanciare la webapp
 CMD ["python", "app.py"]

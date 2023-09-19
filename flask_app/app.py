@@ -524,6 +524,43 @@ def caricamentoCassandraDB():
     #return jsonify(rows)
     #return render_template('index.html', posts=rows)
 
+# Gestione del caricamento dei dataset nel database Postgres
+@app.route('/caricamentoPostgres',methods=['GET'])
+def caricamentoPostgresDB():
+    connessionePostgres=psycopg2.connect(
+        host="postgresDb",
+        port="5432",
+        user="postgres",
+        password="password",
+        database="postgres"
+    )
+    #carichiamo il database con i csv in caricamentoPos e facciamo una query select
+    results=caricamentoPos.caricamentoPostgres(connessionePostgres)
+    #cursor = postgres.cursor()
+
+    return jsonify(results)
+    #return render_template('index.html', posts=results)
+    
+    # Gestione del caricamento dei dataset nel database Dynamo Db
+@app.route('/caricamentoDynamo',methods=['GET'])
+def caricamentoDynamoDB():
+    dynamodb=caricamentoDy.caricamentoDynamo(connessioneDynamo)
+    tabella = dynamodb.Table("compagnieAeree")
+    response = tabella.scan()
+    return jsonify(response)
+    #return render_template('index.html', posts=tables)
+    
+    
+    # Gestione del caricamento dei dataset nel database Mongo
+@app.route('/caricamentoMongo',methods=['GET'])
+def caricamentoMongoDB():
+    # Carichiamo il database con i csv in caricamentoMongo e restituiamo tutti i nomi delle tabelle
+    mongo = caricamentoMongo.caricamentoMon(connessioneMongo)
+    mongo = connessioneMongo
+    lista = mongo.list_database_names()
+    return jsonify(lista)
+    #return render_template('index.html',posts=lista)
+
 
 @app.route('/fly.png')
 def serve_image():
@@ -534,4 +571,4 @@ def serve_image():
 
 if __name__ == "__main__":
     #app.run(debug=True)
-    serve(app, host="0.0.0.0", port=1000)
+    serve(app, host="0.0.0.0", port=8080)
