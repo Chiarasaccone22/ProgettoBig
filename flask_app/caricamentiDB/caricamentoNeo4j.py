@@ -37,6 +37,7 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
     nodeMList = []
     i = 0
 
+################################################### POSTGRES ############################################################
     # Dati spacchettati in base al metodo che li manda
     if strMetodo == 'P':
         
@@ -100,7 +101,7 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                         arco = Relationship(nodeCList[c],'compagnia_volo',nodeDList[d])
                         graph.create(arco)
   
-            
+############################################## DYNAMO ###################################################################
 
     elif strMetodo == 'D':
 
@@ -127,10 +128,11 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
         for m in datiDb[1]:
             #mongoDati.append(m[0])
             # creare nodi e connessioni
-            airport = m[0]['IATA_CODE']
-            """ logging.critical('IATA_CODE:')
-            logging.critical(airport) """
-            nodeM = Node("AEROPORTO", aeroporto=airport)
+            if m != []:
+                airport = m[0]['IATA_CODE']
+                """ logging.critical('IATA_CODE:')
+                logging.critical(airport) """
+                nodeM = Node("AEROPORTO", aeroporto=airport)
             
             if nodeMList ==[]:
                 graph.create(nodeM)
@@ -268,6 +270,8 @@ def neo4jElaborazione(output,strMetodo,connessioneNeo):
                         """ logging.critical('creo arco') """
                         arco = Relationship(nodePList[p],'aeroporto_compagnia',nodeDList[d])
                         graph.create(arco)
+
+################################################# CASSANDRA #################################################
 
     elif strMetodo == 'C':
         logging.critical('DATI PER NEO4J:')
